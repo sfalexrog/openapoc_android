@@ -1,5 +1,30 @@
 apply plugin: 'com.android.application'
 
+if (System.properties['os.name'].toLowerCase().contains('windows')) {
+    ext.ndkBin = 'ndk-build.cmd'
+} else {
+    ext.ndkBin = 'ndk-build'
+}
+
+task buildNative(type: Exec, description: 'Compile JNI source via NDK') {
+    def ndkDir = plugins.getPlugin('com.android.application').sdkHandler.getNdkFolder()
+    commandLine "$ndkDir/$ndkBin", "-C", file('src/main/jni').absolutePath,
+            '-j' + Runtime.runtime.availableProcessors(),
+            'all'
+}
+
+task cleanNative(type: Exec, description: 'Clean JNI object files') {
+    def ndkDir = plugins.getPlugin('com.android.application').sdkHandler.getNdkFolder()
+    commandLine "$ndkDir/$ndkBin", '-C', file('src/main/jni').absolutePath,
+            'clean'
+}
+
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn buildNative
+}
+
+clean.dependsOn 'cleanNative'
+
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.2"
@@ -15,6 +40,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDir 'src/main/libs'
         }
     }
 }
