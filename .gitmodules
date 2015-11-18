@@ -1,0 +1,3 @@
+[submodule "OpenApoc/src/main/jni/OpenApoc"]
+	path = OpenApoc/src/main/jni/OpenApoc
+	url = https://github.com/sfalexrog/OpenApoc.git
