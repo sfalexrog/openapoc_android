@@ -3,11 +3,19 @@ package org.sfalexrog.openapoc;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class OpenApocActivity extends AppCompatActivity {
+import org.liballeg.android.AllegroActivity;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_open_apoc);
+public class OpenApocActivity extends AllegroActivity {
+
+    static {
+        System.loadLibrary("physfs");
+        System.loadLibrary("allegro");
+        System.loadLibrary("icuuc");
+        System.loadLibrary("tinyxml2");
     }
+
+    public OpenApocActivity() {
+        super("libopenapoc.so");
+    }
+
 }
