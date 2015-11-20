@@ -17,6 +17,7 @@ before_install:
   - chmod +x gradlew
 # Maybe gradlew is not executable?
 install:
+  - git submodule update --init --recursive
   - chmod +x ./gradlew; ls -l gradlew; ./gradlew wrapper -v
 # Workaround for missing dependencies?
 before_script:
