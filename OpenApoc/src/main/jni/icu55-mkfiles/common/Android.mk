@@ -156,7 +156,7 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 LOCAL_CFLAGS += $(local_cflags) -DPIC -fPIC
 LOCAL_SHARED_LIBRARIES += libdl $(optional_android_logging_libraries)
 LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := libicuuc
+LOCAL_MODULE := icuuc55
 LOCAL_ADDITIONAL_DEPENDENCIES += $(LOCAL_PATH)/Android.mk
 LOCAL_REQUIRED_MODULES += icu-data
 # Use "-include" to not fail apps_only build.

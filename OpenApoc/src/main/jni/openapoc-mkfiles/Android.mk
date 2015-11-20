@@ -9,7 +9,7 @@ LOCAL_MODULE := openapoc
 OPENAPOC_PATH := $(LOCAL_PATH)/../OpenApoc
 
 # Hopefully, these will set their includes right...
-LOCAL_SHARED_LIBRARIES := allegro physfs icuuc tinyxml2
+LOCAL_SHARED_LIBRARIES := allegro physfs icuuc55 tinyxml2
 
 # Include path for version.h and glm
 LOCAL_C_INCLUDES += $(LOCAL_PATH) \
@@ -22,7 +22,7 @@ LOCAL_CXX_INCLUDES += $(LOCAL_PATH)
 LOCAL_ARM_MODE := arm
 
 OPENAPOC_FLAGS := -DOPENAPOC_GLES -DRENDERERS=\"GLES_2_0\" \
- 				-Wno-inconsistent-missing-override
+ 				-Wno-inconsistent-missing-override -DBROKEN_THREAD_LOCAL
 
 LOCAL_CFLAGS += $(OPENAPOC_FLAGS)
 
