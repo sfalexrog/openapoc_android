@@ -15,6 +15,9 @@ before_install:
   - export ANDROID_NDK=$(pwd)/android-ndk-r10e
   - printf "ndk.dir=$ANDROID_NDK" > local.properties
   - chmod +x gradlew
+# Workaround for missing dependencies?
+before_script:
+  - ./gradlew clean --continue
 android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
