@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
 if (System.properties['os.name'].toLowerCase().contains('windows')) {
     ext.ndkBin = 'ndk-build.cmd'
@@ -6,15 +6,17 @@ if (System.properties['os.name'].toLowerCase().contains('windows')) {
     ext.ndkBin = 'ndk-build'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def ndkDir = properties.getProperty('ndk.dir')
+
 task buildNative(type: Exec, description: 'Compile JNI source via NDK') {
-    def ndkDir = plugins.getPlugin('com.android.application').sdkHandler.getNdkFolder()
     commandLine "$ndkDir/$ndkBin", "-C", file('src/main/jni').absolutePath,
             '-j' + Runtime.runtime.availableProcessors(),
             'all'
 }
 
 task cleanNative(type: Exec, description: 'Clean JNI object files') {
-    def ndkDir = plugins.getPlugin('com.android.application').sdkHandler.getNdkFolder()
     commandLine "$ndkDir/$ndkBin", '-C', file('src/main/jni').absolutePath,
             'clean'
 }
@@ -25,28 +27,102 @@ tasks.withType(JavaCompile) {
 
 clean.dependsOn 'cleanNative'
 
-android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.2"
 
-    defaultConfig {
-        applicationId "org.sfalexrog.openapoc"
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+model {
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "23.0.2"
+
+        defaultConfig.with {
+            applicationId = "org.sfalexrog.openapoc"
+            minSdkVersion.apiLevel = 15
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
         }
     }
 
-    sourceSets {
+    android.ndk {
+        moduleName = "openapoc"
+        toolchain = "clang"
+        stl = 'gnustl_shared'
+        // allegro libraries
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/image")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/font")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/audio")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/acodec")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
+        // physfs includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
+        // icu55 includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
+        // tinyxml includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
+        // glm includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
+        // openapoc includes
+        CFlags.add("-I${file("src/main/jni/openapoc")}".toString())
+        // And now once again, for C++
+        // allegro libraries
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/image")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/font")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/audio")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/acodec")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
+        // physfs includes
+        cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
+        // icu55 includes
+        cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
+        // tinyxml includes
+        cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
+        // glm includes
+        cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
+        // openapoc includes
+        cppFlags.add("-I${file("src/main/jni/openapoc")}".toString())
+        cppFlags.add("-std=c++11")
+
+    }
+
+    android.sources {
         main {
-            jni.srcDirs = []
-            jniLibs.srcDir 'src/main/libs'
+            jni {
+                source {
+                    srcDir 'src/main/none'
+                }
+            }
+            jniLibs {
+                dependencies {
+                    // armeabi-v7a
+                    library file('src/main/libs/armeabi-v7a/libicuuc55.so') abi "armeabi-v7a"
+                    library file('src/main/libs/armeabi-v7a/libtinyxml2.so') abi "armeabi-v7a"
+                    library file('src/main/libs/armeabi-v7a/libopenapoc.so') abi "armeabi-v7a"
+                    library file('src/main/libs/armeabi-v7a/libphysfs.so') abi "armeabi-v7a"
+                    library file('src/main/libs/armeabi-v7a/liballegro.so') abi "armeabi-v7a"
+                    //library file('src/main/libs/armeabi-v7a/libc++_shared.so') abi "armeabi-v7a"
+                    library file('src/main/libs/armeabi-v7a/libgnustl_shared.so') abi "armeabi-v7a"
+                    // x86
+                    library file('src/main/libs/x86/libicuuc55.so') abi "x86"
+                    library file('src/main/libs/x86/libtinyxml2.so') abi "x86"
+                    library file('src/main/libs/x86/libopenapoc.so') abi "x86"
+                    library file('src/main/libs/x86/libphysfs.so') abi "x86"
+                    library file('src/main/libs/x86/liballegro.so') abi "x86"
+                    //library file('src/main/libs/x86/libc++_shared.so') abi "x86"
+                    library file('src/main/libs/x86/libgnustl_shared.so') abi "x86"
+                }
+            }
+        }
+    }
+    android.buildTypes {
+        release {
+            minifyEnabled = false
         }
     }
 }
