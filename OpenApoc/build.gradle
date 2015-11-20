@@ -31,7 +31,7 @@ clean.dependsOn 'cleanNative'
 model {
     android {
         compileSdkVersion = 22
-        buildToolsVersion = "23.0.2"
+        buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
             applicationId = "org.sfalexrog.openapoc"
@@ -130,5 +130,5 @@ model {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
 }

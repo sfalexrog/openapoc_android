@@ -22,9 +22,10 @@ android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
    - tools
-   - build-tools-23.0.2
+   - build-tools-22.0.1
    - android-22
    - extra-android-m2repository
    - extra-support
+   - extra
   licenses:
     - android-sdk-license-*
