@@ -10,7 +10,7 @@ public class OpenApocActivity extends AllegroActivity {
     static {
         System.loadLibrary("physfs");
         System.loadLibrary("allegro");
-        System.loadLibrary("icuuc");
+        System.loadLibrary("icuuc55");
         System.loadLibrary("tinyxml2");
     }
 
