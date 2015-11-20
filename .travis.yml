@@ -1,0 +1,20 @@
+language: android
+sudo: false
+addons:
+  apt:
+    packages:
+     - p7zip-full
+env:
+  - BUILD_ARCH_LIST='armeabi-v7a'
+  - BUILD_ARCH_LIST='x86'
+before_install:
+  - wget --timeout=120 http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -O ndk.bin
+  - md5sum ndk.bin | grep 19af543b068bdb7f27787c2bc69aba7f
+  - 7z x ndk.bin > /dev/null
+  - export ANDROID_NDK=$(pwd)/android-ndk-r10e
+  - printf "ndk.dir=$ANDROID_NDK" > local.properties
+  - chmod +x gradlew
+android:
+  components:
+   - build-tools-23.0.2
+   - android-22
