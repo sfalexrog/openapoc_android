@@ -30,5 +30,3 @@ android:
    - extra-android-m2repository
    - extra-support
    - extra
-  licenses:
-    - android-sdk-license-*
