@@ -5,6 +5,7 @@ addons:
     packages:
      - p7zip-full
 env:
+# Only 32-bit architectures currently
   - BUILD_ARCH_LIST='armeabi-v7a'
   - BUILD_ARCH_LIST='x86'
 before_install:
