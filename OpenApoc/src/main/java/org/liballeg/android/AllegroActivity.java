@@ -10,7 +10,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.graphics.Rect;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,6 +35,7 @@ public class AllegroActivity extends Activity
    private boolean exitedMain = false;
    private boolean joystickReconfigureNotified = false;
    private Vector<Integer> joysticks;
+   private Clipboard clipboard;
 
    public final static int JS_A = 0;
    public final static int JS_B = 1;
@@ -96,6 +99,24 @@ public class AllegroActivity extends Activity
       return android.os.Build.MANUFACTURER;
    }
 
+   Rect getDisplaySize()
+   {
+      Display display = getWindowManager().getDefaultDisplay();
+      Rect size = new Rect();
+
+      if (android.os.Build.VERSION.SDK_INT >= 13) {
+         display.getRectSize(size);
+      }
+      else {
+         size.left = 0;
+         size.top = 0;
+         size.right = display.getWidth();
+         size.bottom = display.getHeight();
+      }
+
+      return size;
+   }
+
    void postRunnable(Runnable runme)
    {
       try {
@@ -114,12 +135,12 @@ public class AllegroActivity extends Activity
                getWindowManager().getDefaultDisplay(), this);
 
          SurfaceHolder holder = surface.getHolder();
-         holder.addCallback(surface); 
+         holder.addCallback(surface);
          holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
          //setContentView(surface);
          Window win = getWindow();
          win.setContentView(surface);
-         Log.d("AllegroActivity", "createSurface end");  
+         Log.d("AllegroActivity", "createSurface end");
       } catch (Exception x) {
          Log.d("AllegroActivity", "createSurface exception: " + x.getMessage());
       }
@@ -295,6 +316,7 @@ public class AllegroActivity extends Activity
 
       handler = new Handler();
       sensors = new Sensors(getApplicationContext());
+      clipboard = new Clipboard(this);
 
       currentConfig = new Configuration(getResources().getConfiguration());
 
@@ -333,6 +355,7 @@ public class AllegroActivity extends Activity
    {
       super.onStop();
       Log.d("AllegroActivity", "onStop.");
+      destroySurface();
    }
 
    /** Called when the activity is paused. */
@@ -468,8 +491,8 @@ public class AllegroActivity extends Activity
 
    private boolean isJoystick(int id) {
          InputDevice input = InputDevice.getDevice(id);
-         int sources = input.getSources() & ~InputDevice.SOURCE_CLASS_MASK;
-         if ((sources & InputDevice.SOURCE_GAMEPAD) != 0 || (sources & InputDevice.SOURCE_JOYSTICK) != 0) {
+         int sources = input.getSources();
+         if ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
             return true;
          }
          return false;
@@ -487,7 +510,7 @@ public class AllegroActivity extends Activity
             Log.d("AllegroActivity", "Found joystick. Index=" + (joysticks.size()-1) + " id=" + all[i]);
          }
       }
-      
+
       joystickReconfigureNotified = false;
    }
 
@@ -505,6 +528,18 @@ public class AllegroActivity extends Activity
 
    public void setJoystickInactive() {
       joystickActive = false;
+   }
+
+   public String getClipboardText() {
+      return clipboard.getText();
+   }
+
+   public boolean hasClipboardText() {
+      return clipboard.hasText();
+   }
+
+   public boolean setClipboardText(String text) {
+      return clipboard.setText(text);
    }
 }
 

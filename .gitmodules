@@ -1,3 +1,6 @@
 [submodule "OpenApoc/src/main/jni/OpenApoc"]
 	path = OpenApoc/src/main/jni/OpenApoc
 	url = https://github.com/sfalexrog/OpenApoc.git
+[submodule "OpenApoc/src/main/jni/al_5_1_12"]
+	path = OpenApoc/src/main/jni/al_5_1_12
+	url = https://github.com/sfalexrog/allegro5
