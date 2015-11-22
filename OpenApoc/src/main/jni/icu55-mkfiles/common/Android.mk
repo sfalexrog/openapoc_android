@@ -150,6 +150,7 @@ local_cflags += -O3 -fvisibility=hidden
 #
 
 include $(CLEAR_VARS)
+LOCAL_ARM_MODE := arm
 LOCAL_SRC_FILES += $(src_files)
 LOCAL_C_INCLUDES += $(c_includes) $(optional_android_logging_includes)
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
