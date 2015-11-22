@@ -21,7 +21,7 @@ LOCAL_CXX_INCLUDES += $(LOCAL_PATH)
 
 LOCAL_ARM_MODE := arm
 
-OPENAPOC_FLAGS := -DOPENAPOC_GLES -DRENDERERS=\"GLES_2_0\" \
+OPENAPOC_FLAGS := -DOPENAPOC_GLES -DRENDERERS=\"GLES_3_0:GLES_2_0\" \
  				-Wno-inconsistent-missing-override -DBROKEN_THREAD_LOCAL
 
 LOCAL_CFLAGS += $(OPENAPOC_FLAGS)
@@ -34,6 +34,7 @@ LOCAL_SRC_FILES := $(wildcard $(OPENAPOC_PATH)/forms/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/framework/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/framework/imageloader/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/framework/render/gles20/*.cpp) \
+			$(wildcard $(OPENAPOC_PATH)/framework/render/gles30/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/framework/sound/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/framework/ThreadPool/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/game/*.cpp) \
@@ -49,6 +50,6 @@ LOCAL_SRC_FILES := $(wildcard $(OPENAPOC_PATH)/forms/*.cpp) \
 			$(wildcard $(OPENAPOC_PATH)/library/*.cpp)
 
 # Link against these libraries for good measure
-LOCAL_LDLIBS := -lEGL -lGLESv1_CM -lGLESv2 -lOpenSLES -llog -landroid -lm
+LOCAL_LDLIBS := -lEGL -lGLESv1_CM -lGLESv2 -lGLESv3 -lOpenSLES -llog -landroid -lm
 
 include $(BUILD_SHARED_LIBRARY)
