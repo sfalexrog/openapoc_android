@@ -41,9 +41,10 @@ model {
             versionName = "1.0"
         }
 
-        lintOptions {
-            abortOnError false
-        }
+    }
+
+    android.lintOptions {
+        abortOnError = false
     }
 
     android.ndk {
