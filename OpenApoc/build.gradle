@@ -113,6 +113,7 @@ model {
         // glm includes
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
         // openapoc includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc")}".toString())
         cppFlags.add("-I${file("src/main/jni/openapoc-mkfiles")}".toString())
         // openapoc defines
