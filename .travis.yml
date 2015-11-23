@@ -23,7 +23,7 @@ install:
 before_script:
   - ./gradlew clean --continue
 script:
-  - ./gradlew assemble
+  - travis_wait ./gradlew assemble
 android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
