@@ -8,10 +8,11 @@ import org.liballeg.android.AllegroActivity;
 public class OpenApocActivity extends AllegroActivity {
 
     static {
-        System.loadLibrary("physfs");
+        /*System.loadLibrary("physfs");
         System.loadLibrary("allegro");
         System.loadLibrary("icuuc55");
-        System.loadLibrary("tinyxml2");
+        System.loadLibrary("tinyxml2");*/
+        System.loadLibrary("openapoc");
     }
 
     public OpenApocActivity() {
