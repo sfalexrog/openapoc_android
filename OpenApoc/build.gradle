@@ -28,6 +28,20 @@ tasks.withType(JavaCompile) {
 clean.dependsOn 'cleanNative'
 */
 
+def buildAbisEnv = System.getenv()['BUILD_ARCH_LIST']
+
+def buildAbis = new ArrayList<String>()
+
+if (!buildAbisEnv) {
+    buildAbis.add('x86')
+    buildAbis.add('armeabi-v7a')
+} else {
+    buildAbis.addAll(buildAbisEnv.split(" "))
+}
+
+
+
+
 model {
     android {
         compileSdkVersion = 22
@@ -52,8 +66,7 @@ model {
         toolchain = "gcc"
         stl = 'gnustl_shared'
         // x86 and armv7
-        abiFilters.add("armeabi-v7a")
-        abiFilters.add("x86")
+        abiFilters.addAll(buildAbis)
         // allegro libraries
         CFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
         CFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
