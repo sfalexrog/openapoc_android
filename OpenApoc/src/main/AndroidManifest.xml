@@ -12,8 +12,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".OpenApocActivity" >
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        <activity android:name=".OpenApocActivity"
+                  android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
