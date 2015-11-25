@@ -3,9 +3,9 @@ package org.sfalexrog.openapoc;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import org.liballeg.android.AllegroActivity;
+import org.libsdl.app.SDLActivity;
 
-public class OpenApocActivity extends AllegroActivity {
+public class OpenApocActivity extends SDLActivity {
 
     static {
         /*System.loadLibrary("physfs");
@@ -15,8 +15,20 @@ public class OpenApocActivity extends AllegroActivity {
         System.loadLibrary("openapoc");
     }
 
-    public OpenApocActivity() {
-        super("libopenapoc.so");
+    @Override
+    protected String[] getLibraries() {
+        return new String[] {"openapoc"};
+    }
+
+    @Override
+    protected String[] getArguments() {
+        String[] args = new String[] {
+                "Resource.SystemCDPath=/sdcard/openapoc/cd.iso",
+                "Resource.LocalCDPath=/sdcard/openapoc/cd.iso",
+                "Resource.SystemDataDir=/sdcard/openapoc",
+                "Resource.LocalDataDir=/sdcard/openapoc"
+        };
+        return args;
     }
 
 }
