@@ -64,10 +64,11 @@ model {
     android.ndk {
         moduleName = "openapoc"
         toolchain = "gcc"
-        stl = 'gnustl_shared'
+        stl = 'c++_shared'
         // x86 and armv7
         abiFilters.addAll(buildAbis)
         // allegro libraries
+        /*
         CFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
         CFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
         CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
@@ -78,35 +79,8 @@ model {
         CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
         CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
         CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())
-        // physfs includes
-        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
-        // icu55 includes
-        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
-        // tinyxml includes
-        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
-        // glm includes
-        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
-        // openapoc includes
-        CFlags.add("-I${file("src/main/jni/openapoc")}".toString())
-        // defines
-        // allegro
-        CFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
-        CFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
-        CFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])
-        cppFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
-        cppFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
-        cppFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])
-        // icu55
-        CFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
-        CFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
-        cppFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
-        cppFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
-        // physfs
-        CFlags.addAll(["-DPHYSFS_SUPPORTS_ISO9660"])
-        // And now once again, for C++
-        // allegro libraries
-        cppFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())*/
+        /*cppFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/image")}".toString())
@@ -116,20 +90,54 @@ model {
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
         cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())
+        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())*/
+        // sdl includes
+        CFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
+        // sdl-image includes
+        CFlags.add("-I${file("src/main/jni/SDL_image")}".toString())
+        cppFlags.add("-I${file("src/main/jni/SDL_image")}".toString())
         // physfs includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
         // icu55 includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
         // tinyxml includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
         // glm includes
+        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/glm")}".toString())
         // openapoc includes
         CFlags.add("-I${file("src/main/jni/OpenApoc")}".toString())
+        CFlags.add("-I${file("src/main/jni/openapoc-mkfiles")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc")}".toString())
         cppFlags.add("-I${file("src/main/jni/openapoc-mkfiles")}".toString())
-        // openapoc defines
+        // defines
+        // allegro
+        /*CFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
+        CFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
+        CFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])
+        cppFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
+        cppFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
+        cppFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])*/
+        // sdl
+        CFlags.add("-DGL_GLEXT_PROTOTYPES")
+        cppFlags.add("-DGL_GLEXT_PROTOTYPES")
+        // sdl-image
+        CFlags.addAll(["-DLOAD_BMP", "-DLOAD_GIF", "-DLOAD_LBM", "-DLOAD_PCX", "-DLOAD_PNM", "-DLOAD_TGA", "-DLOAD_XCF", "-DLOAD_XPM", "-DLOAD_XV"])
+        cppFlags.addAll(["-DLOAD_BMP", "-DLOAD_GIF", "-DLOAD_LBM", "-DLOAD_PCX", "-DLOAD_PNM", "-DLOAD_TGA", "-DLOAD_XCF", "-DLOAD_XPM", "-DLOAD_XV"])
+        // icu55
+        CFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
+        CFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
+        cppFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
+        cppFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
+        // physfs
+        CFlags.addAll(["-DPHYSFS_SUPPORTS_ISO9660"])
+        // And now once again, for C++
+        // allegro libraries
+
         cppFlags.addAll(["-DOPENAPOC_GLES", "-DRENDERERS=\"GLES_3_0:GLES_2_0\"",
                         "-DBROKEN_THREAD_LOCAL"])
         cppFlags.add("-std=c++11")
@@ -147,44 +155,21 @@ model {
 
                     srcDir 'src/main/jni'
                     // allegro excludes
-                    exclude '**/docs/scripts/**'
-                    exclude '**/gp2xwiz/**'
-                    exclude '**/iphone/**'
-                    exclude '**/linux/**'
-                    exclude '**/macosx/**'
-                    exclude '**/raspberrypi/**'
-                    exclude '**/sdl/**'
-                    exclude '**/win/**'
-                    exclude '**/x/**'
-                    // allegro-addons excludes
-                    exclude '**/addons/audio/alsa.c'
-                    exclude '**/addons/audio/dsound.cpp'
-                    exclude '**/addons/audio/oss.c'
-                    exclude '**/addons/audio/pulseaudio.c'
-                    exclude '**/addons/audio/sdl_audio.c'
-                    exclude '**/addons/audio/openal.c'
-                    exclude '**/addons/acodec/ogg.c'
-                    exclude '**/addons/acodec/flac.c'
-                    exclude '**/addons/acodec/modaudio.c'
-                    exclude '**/addons/image/png.c'
-                    exclude '**/addons/image/jpg.c'
-                    exclude '**/native_dialog/**'
-                    exclude '**/image/gdiplus.cpp'
-                    exclude '**/addons/primitives/directx_shaders.cpp'
-                    exclude '**/addons/primitives/nshader.cpp'
-                    exclude '**/ttf/**'
-                    exclude '**/video/**'
-                    exclude '**/demos/**'
-                    exclude '**/examples/*.c*'
-                    exclude '**/misc/askq.c'
-                    exclude '**/misc/msvchelp.c'
-                    exclude '**/misc/vcvars.c'
-                    exclude '**/tests/**'
-                    exclude '**/tools/**'
-                    exclude '**/unix/udrvlist.c'
-                    exclude '**/android/example/**'
+                    exclude '**/al_5_1_12/**'
                     // allegro-deps excludes
                     exclude '**/dependencies/allegro/**'
+                    // sdl2 excludes
+                    exclude '**/SDL/test/**'
+                    exclude '**/SDL/visualtest/**'
+                    // sdl-image excludes
+                    exclude '**/SDL_image/showimage.c'
+                    exclude '**/SDL_image/external/jpeg-9/**'
+                    exclude '**/SDL_image/external/libpng-1.6.2/**'
+                    exclude '**/SDL_image/external/libwebp-0.3.0/**'
+                    exclude '**/SDL_image/external/tiff-4.0.3/**'
+                    exclude '**/SDL_image/external/zlib-1.2.8/**'
+
+
                     // icu55 excludes
                     exclude '**/icu55/as_is/**'
                     exclude '**/icu55/source/allinone/**'
