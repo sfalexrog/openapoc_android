@@ -1,48 +1,67 @@
+import java.security.MessageDigest
+
+def signing = [
+        enabled         : false,
+        storeFilePath   : '.keystore',
+        storePassword   : 'password',
+        keyAlias        : 'alias',
+        keyPassword     : 'password'
+]
+
 apply plugin: 'com.android.model.application'
 
-if (System.properties['os.name'].toLowerCase().contains('windows')) {
-    ext.ndkBin = 'ndk-build.cmd'
-} else {
-    ext.ndkBin = 'ndk-build'
+if (file('signing.properties').exists()) {
+    Properties properties = new Properties()
+    properties.load(file("signing.properties").newDataInputStream())
+    signing.enabled = properties.getProperty("signing.enabled")
+    signing.storeFilePath = properties.getProperty("signing.storeFilePath")
+    signing.storePassword = properties.getProperty("signing.storePassword")
+    signing.keyAlias = properties.getProperty("signing.keyAlias")
+    signing.keyPassword = properties.getProperty("signing.keyPassword")
+    println("Signing configuration loaded")
 }
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def ndkDir = properties.getProperty('ndk.dir')
-/*
-task buildNative(type: Exec, description: 'Compile JNI source via NDK') {
-    commandLine "$ndkDir/$ndkBin", "-C", file('src/main/jni').absolutePath,
-            '-j' + Runtime.runtime.availableProcessors(),
-            'all'
-}
-
-task cleanNative(type: Exec, description: 'Clean JNI object files') {
-    commandLine "$ndkDir/$ndkBin", '-C', file('src/main/jni').absolutePath,
-            'clean'
-}
-
-tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn buildNative
-}
-
-clean.dependsOn 'cleanNative'
-*/
 
 def buildAbisEnv = System.getenv()['BUILD_ARCH_LIST']
 
 def buildAbis = new ArrayList<String>()
 
 if (!buildAbisEnv) {
-    buildAbis.add('x86')
-    buildAbis.add('armeabi-v7a')
+    buildAbis.addAll(['mips', 'armeabi-v7a','x86', 'x86_64', 'arm64-v8a', 'mips64'])
 } else {
     buildAbis.addAll(buildAbisEnv.split(" "))
 }
 
+def getFolder(res) {
+    return file("src/main/jni/OpenApoc/${res}")
+}
 
+tasks.withType(Zip) {
+    zTask -> zTask.doLast {
+        MessageDigest digest = MessageDigest.getInstance("MD5")
+        digest.update(file(zTask.archivePath).bytes)
+        def checksum = new BigInteger(1, digest.digest()).toString(16).padLeft(32, "0")
+        new File(zTask.archivePath.toString() + ".md5").text = checksum
+    }
+}
 
+task packData(description: 'Update data files.') {
+    ['data'].each { String res ->
+        def zip = task("zip" + res, type: Zip)
+        zip.doFirst { println("Packing ${res}...")}
+        zip.destinationDir = file('src/main/assets')
+        zip.archiveName = "${res}.zip"
+        zip.from getFolder(res)
+        zip.into res
+        zip.execute()
+    }
+}
+
+build.dependsOn packData
 
 model {
+
+    def signingConf
+
     android {
         compileSdkVersion = 22
         buildToolsVersion = "22.0.1"
@@ -54,7 +73,6 @@ model {
             versionCode = 1
             versionName = "1.0"
         }
-
     }
 
     android.lintOptions {
@@ -65,32 +83,7 @@ model {
         moduleName = "openapoc"
         toolchain = "gcc"
         stl = 'c++_shared'
-        // x86 and armv7
         abiFilters.addAll(buildAbis)
-        // allegro libraries
-        /*
-        CFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/image")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/font")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/audio")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/acodec")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
-        CFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())*/
-        /*cppFlags.add("-I${file("src/main/jni/allegro-mkfiles/include")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/include")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/primitives")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/image")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/font")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/audio")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/acodec")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/memfile")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/color")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/main")}".toString())
-        cppFlags.add("-I${file("src/main/jni/al_5_1_12/addons/physfs")}".toString())*/
         // sdl includes
         CFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
         cppFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
@@ -115,13 +108,6 @@ model {
         cppFlags.add("-I${file("src/main/jni/OpenApoc")}".toString())
         cppFlags.add("-I${file("src/main/jni/openapoc-mkfiles")}".toString())
         // defines
-        // allegro
-        /*CFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
-        CFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
-        CFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])
-        cppFlags.addAll(["-DGL_GLEXT_PROTOTYPES", "-DALLEGRO_SRC", "-DALLEGRO_PRIMITIVES_SRC", "-DALLEGRO_IIO_SRC", "-DALLEGRO_FONT_SRC"])
-        cppFlags.addAll(["-DALLEGRO_KCM_AUDIO_SRC", "-DALLEGRO_ACODEC_SRC", "-DALLEGRO_COLOR_SRC", "-DALLEGRO_MEMFILE_SRC"])
-        cppFlags.addAll(["-DALLEGRO_SRC", "-DALLEGRO_LIB_BUILD", "-Dallegro_monolith_EXPORTS"])*/
         // sdl
         CFlags.add("-DGL_GLEXT_PROTOTYPES")
         cppFlags.add("-DGL_GLEXT_PROTOTYPES")
@@ -135,11 +121,10 @@ model {
         cppFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
         // physfs
         CFlags.addAll(["-DPHYSFS_SUPPORTS_ISO9660"])
-        // And now once again, for C++
-        // allegro libraries
-
+        // openapoc
         cppFlags.addAll(["-DOPENAPOC_GLES", "-DRENDERERS=\"GLES_3_0:GLES_2_0\"",
                         "-DBROKEN_THREAD_LOCAL"])
+        // misc c++ flags
         cppFlags.add("-std=c++11")
         cppFlags.add("-frtti")
         cppFlags.add("-fexceptions")
@@ -201,32 +186,27 @@ model {
                     exclude '**/OpenApoc/framework/render/gl30/**'
                 }
             }
-            /*
-            jniLibs {
-                dependencies {
-                    // armeabi-v7a
-                    library file('src/main/libs/armeabi-v7a/libicuuc55.so') abi "armeabi-v7a"
-                    library file('src/main/libs/armeabi-v7a/libtinyxml2.so') abi "armeabi-v7a"
-                    library file('src/main/libs/armeabi-v7a/libopenapoc.so') abi "armeabi-v7a"
-                    library file('src/main/libs/armeabi-v7a/libphysfs.so') abi "armeabi-v7a"
-                    library file('src/main/libs/armeabi-v7a/liballegro.so') abi "armeabi-v7a"
-                    //library file('src/main/libs/armeabi-v7a/libc++_shared.so') abi "armeabi-v7a"
-                    library file('src/main/libs/armeabi-v7a/libgnustl_shared.so') abi "armeabi-v7a"
-                    // x86
-                    library file('src/main/libs/x86/libicuuc55.so') abi "x86"
-                    library file('src/main/libs/x86/libtinyxml2.so') abi "x86"
-                    library file('src/main/libs/x86/libopenapoc.so') abi "x86"
-                    library file('src/main/libs/x86/libphysfs.so') abi "x86"
-                    library file('src/main/libs/x86/liballegro.so') abi "x86"
-                    //library file('src/main/libs/x86/libc++_shared.so') abi "x86"
-                    library file('src/main/libs/x86/libgnustl_shared.so') abi "x86"
-                }
-            }*/
         }
     }
+
     android.buildTypes {
         release {
             minifyEnabled = false
+            if (signing.enabled) {
+                signingConfig = signingConf
+            }
+        }
+    }
+
+    if (signing.enabled) {
+        android.signingConfigs {
+            create("release") {
+                storeFile = file(signing.storeFilePath)
+                storePassword = signing.storePassword
+                keyAlias = signing.keyAlias
+                keyPassword = signing.keyPassword
+                signingConf = it
+            }
         }
     }
 }
