@@ -1,1 +1,1 @@
-include ':OpenApoc'
+include ':OpenApoc', ':aFileDialog'

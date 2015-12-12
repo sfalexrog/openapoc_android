@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\no.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\no.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\document_gray.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\document_gray.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\ic_launcher.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\add.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\add.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\folder.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\folder.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\document.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\document.png"
+    },
+    {
+        "merged": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\tick.png",
+        "source": "D:\\coding\\android\\OpenApoc\\aFileDialog\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\tick.png"
+    }
+]
