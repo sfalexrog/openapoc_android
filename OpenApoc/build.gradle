@@ -147,6 +147,8 @@ model {
                 source {
 
                     srcDir 'src/main/jni'
+                    // sdl2-deps excludes
+                    exclude '**/dependencies/SDL2/**'
                     // sdl2 excludes
                     exclude '**/SDL/test/**'
                     exclude '**/SDL/visualtest/**'
