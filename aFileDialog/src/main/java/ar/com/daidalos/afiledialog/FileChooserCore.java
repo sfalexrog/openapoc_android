@@ -34,6 +34,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+
 import ar.com.daidalos.afiledialog.view.FileItem;
 
 /**
@@ -524,6 +526,10 @@ class FileChooserCore {
 		LinearLayout root = this.chooser.getRootLayout();
 		LinearLayout layout = (LinearLayout) root.findViewById(R.id.linearLayoutFiles);
 		layout.removeAllViews();
+
+		// Scroll to the top
+		ScrollView scrollView = (ScrollView) root.findViewById(R.id.scrollView1);
+		scrollView.scrollTo(0, 0);
 		
 		// Get the file path.
 		if(folder == null || !folder.exists()) {
