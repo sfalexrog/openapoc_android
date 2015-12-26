@@ -5,9 +5,13 @@ addons:
     packages:
      - p7zip-full
 env:
-# Only 32-bit architectures currently
+# Build for all suppported architectures in parallel
+  - BUILD_ARCH_LIST='mips'
   - BUILD_ARCH_LIST='armeabi-v7a'
   - BUILD_ARCH_LIST='x86'
+  - BUILD_ARCH_LIST='x86_64'
+  - BUILD_ARCH_LIST='arm64-v8a'
+  - BUILD_ARCH_LIST='mips64'
 before_install:
   - wget --timeout=120 http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -O ndk.bin
   - md5sum ndk.bin | grep 19af543b068bdb7f27787c2bc69aba7f
@@ -23,7 +27,7 @@ install:
 before_script:
   - ./gradlew clean --continue
 script:
-  - ./gradlew assemble --info
+  - ./gradlew assemble
 android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
