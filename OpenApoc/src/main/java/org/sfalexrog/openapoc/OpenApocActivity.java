@@ -26,10 +26,9 @@ public class OpenApocActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(android.R.style.Theme_Black_NoTitleBar);
         super.onCreate(savedInstanceState);
-        if (Config.getInstance() == null) {
-            config = Config.init(this);
-        }
+        config = Config.init(this);
     }
 
     @Override
@@ -41,7 +40,9 @@ public class OpenApocActivity extends SDLActivity {
     protected String[] getArguments() {
         List<String> argsList = new ArrayList<>();
         for (Config.Option option : Config.Option.values()) {
-            argsList.add(option.key() + "=" + config.getOption(option));
+            if (option.isPassed()) {
+                argsList.add(option.key() + "=" + config.getOption(option));
+            }
         }
         String[] args = new String[argsList.size()];
         args = argsList.toArray(args);

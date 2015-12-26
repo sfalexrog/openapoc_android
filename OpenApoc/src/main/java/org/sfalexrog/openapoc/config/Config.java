@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Alexey on 06.12.2015.
  */
@@ -18,20 +21,23 @@ public class Config {
     }
 
     public enum Option {
-        LANGUAGE ("Language", "en_gb"),
-        GAMERULES ("GameRules", "XCOMAPOC.XML"),
-        RES_LOCAL_DATA_DIR("Resource.LocalDataDir", null),
-        RES_SYSTEM_DATA_DIR("Resource.SystemDataDir", null),
-        RES_LOCAL_CD_PATH("Resource.LocalCDPath", null),
-        RES_SYSTEM_CD_PATH("Resource.SystemCDPath", null),
-        VISUAL_RENDERERS("Visual.Renderers", "GLES_3_0:GLES_2_0"),
-        AUDIO_BACKENDS("Audio.Backends", "SDLRaw:allegro:null"),
-        FRAMEWORK_THREADPOOL_SIZE("Framework.TreadPoolSize", "0");
+        LANGUAGE ("Language", "en_gb", true, true),
+        GAMERULES ("GameRules", "XCOMAPOC.XML", true, true),
+        RES_LOCAL_DATA_DIR("Resource.LocalDataDir", null, true, true),
+        RES_SYSTEM_DATA_DIR("Resource.SystemDataDir", null, true, false),
+        RES_LOCAL_CD_PATH("Resource.LocalCDPath", null, true, false),
+        RES_SYSTEM_CD_PATH("Resource.SystemCDPath", null, true, false),
+        VISUAL_RENDERERS("Visual.Renderers", "GLES_3_0:GLES_2_0", true, false),
+        AUDIO_BACKENDS("Audio.Backends", "SDLRaw:allegro:null", true, false),
+        FRAMEWORK_THREADPOOL_SIZE("Framework.TreadPoolSize", "0", true, false),
+        ANDROID_DATA_HASH("Android.DataHash", "Undefined", false, false);
 
         private final String key;
         private final String defaultValue;
+        private final boolean isPassed;
+        private final boolean isShown;
 
-        Option(String key, String defaultValue) {
+        Option(String key, String defaultValue, boolean isPassed, boolean isShown) {
             this.key = key;
             if (defaultValue != null) {
                 this.defaultValue = defaultValue;
@@ -45,14 +51,36 @@ public class Config {
                     this.defaultValue = null;
                 }
             }
+            this.isPassed = isPassed;
+            this.isShown = isShown;
         }
 
         public String key() { return key; }
         public String value() { return defaultValue; }
+        public boolean isPassed() { return isPassed; }
+        public boolean isShown() { return isShown; }
+    }
+
+    public Config setOption(Option option, String value) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(option.key(), value);
+        editor.apply();
+        return this;
+    }
+
+    public Config setOption(Option option, Set<String> values) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putStringSet(option.key(), values);
+        editor.apply();
+        return this;
     }
 
     public String getOption(Option option) {
         return mPrefs.getString(option.key(), option.value());
+    }
+
+    public Set<String> getOptionSet(Option option) {
+        return mPrefs.getStringSet(option.key(), new HashSet<String>());
     }
 
     private static final String SP_NAME = "OpenApocPreferences";
@@ -122,6 +150,7 @@ public class Config {
         for (Option pref: Option.values()) {
             editor.putString(pref.key(), pref.value());
         }
+        editor.apply();
         return this;
     }
 
@@ -129,6 +158,5 @@ public class Config {
         mContext = context.getApplicationContext();
         mPrefs = mContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         mPrefs.registerOnSharedPreferenceChangeListener(new OnPrefEditListener());
-        setDefaults();
     }
 }
