@@ -1,11 +1,11 @@
 import java.security.MessageDigest
 
 def signing = [
-        enabled         : false,
-        storeFilePath   : '.keystore',
-        storePassword   : 'password',
-        keyAlias        : 'alias',
-        keyPassword     : 'password'
+        enabled      : false,
+        storeFilePath: '.keystore',
+        storePassword: 'password',
+        keyAlias     : 'alias',
+        keyPassword  : 'password'
 ]
 
 apply plugin: 'com.android.model.application'
@@ -36,18 +36,19 @@ def getFolder(res) {
 }
 
 tasks.withType(Zip) {
-    zTask -> zTask.doLast {
-        MessageDigest digest = MessageDigest.getInstance("MD5")
-        digest.update(file(zTask.archivePath).bytes)
-        def checksum = new BigInteger(1, digest.digest()).toString(16).padLeft(32, "0")
-        new File(zTask.archivePath.toString() + ".md5").text = checksum
-    }
+    zTask ->
+        zTask.doLast {
+            MessageDigest digest = MessageDigest.getInstance("MD5")
+            digest.update(file(zTask.archivePath).bytes)
+            def checksum = new BigInteger(1, digest.digest()).toString(16).padLeft(32, "0")
+            new File(zTask.archivePath.toString() + ".md5").text = checksum
+        }
 }
 
 task packData(description: 'Update data files.') {
     ['data'].each { String res ->
         def zip = task("zip" + res, type: Zip)
-        zip.doFirst { println("Packing ${res}...")}
+        zip.doFirst { println("Packing ${res}...") }
         zip.destinationDir = file('src/main/assets')
         zip.archiveName = "${res}.zip"
         zip.from getFolder(res)
@@ -82,7 +83,7 @@ model {
     android.ndk {
         moduleName = "openapoc"
         toolchain = "gcc"
-        stl = 'c++_shared'
+        stl = 'c++_static'
         abiFilters.addAll(buildAbis)
         // sdl includes
         CFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
@@ -90,6 +91,9 @@ model {
         // sdl-image includes
         CFlags.add("-I${file("src/main/jni/SDL_image")}".toString())
         cppFlags.add("-I${file("src/main/jni/SDL_image")}".toString())
+        // sdl-mixer includes
+        CFlags.add("-I${file("src/main/jni/SDL_mixer")}".toString())
+        cppFlags.add("-I${file("src/main/jni/SDL_mixer")}".toString())
         // physfs includes
         CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
@@ -123,11 +127,15 @@ model {
         CFlags.addAll(["-DPHYSFS_SUPPORTS_ISO9660"])
         // openapoc
         cppFlags.addAll(["-DOPENAPOC_GLES", "-DRENDERERS=\"GLES_3_0:GLES_2_0\"",
-                        "-DBROKEN_THREAD_LOCAL"])
+                         "-DBROKEN_THREAD_LOCAL"])
         // misc c++ flags
         cppFlags.add("-std=c++11")
         cppFlags.add("-frtti")
         cppFlags.add("-fexceptions")
+
+        //CFlags.addAll(["-fsanitize=address", "-fno-omit-frame-pointer"])
+        //cppFlags.addAll(["-fsanitize=address", "-fno-omit-frame-pointer"])
+        //ldFlags.add("-fsanitize=address")
 
         ldLibs.addAll(["log", "EGL", "GLESv1_CM", "GLESv2", "GLESv3", "OpenSLES", "android", "m"])
 
@@ -139,10 +147,6 @@ model {
                 source {
 
                     srcDir 'src/main/jni'
-                    // allegro excludes
-                    exclude '**/al_5_1_12/**'
-                    // allegro-deps excludes
-                    exclude '**/dependencies/allegro/**'
                     // sdl2 excludes
                     exclude '**/SDL/test/**'
                     exclude '**/SDL/visualtest/**'
@@ -153,8 +157,12 @@ model {
                     exclude '**/SDL_image/external/libwebp-0.3.0/**'
                     exclude '**/SDL_image/external/tiff-4.0.3/**'
                     exclude '**/SDL_image/external/zlib-1.2.8/**'
-
-
+                    // sdl-mixer excludes
+                    exclude '**/SDL_mixer/external/**'
+                    exclude '**/SDL_mixer/native_midi/**'
+                    exclude '**/SDL_mixer/timidity/**'
+                    exclude '**/SDL_mixer/playmus.c'
+                    exclude '**/SDL_mixer/playwave.c'
                     // icu55 excludes
                     exclude '**/icu55/as_is/**'
                     exclude '**/icu55/source/allinone/**'
@@ -214,5 +222,7 @@ model {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile project(':aFileDialog')
 }
