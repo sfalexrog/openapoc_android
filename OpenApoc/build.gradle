@@ -26,7 +26,7 @@ def buildAbisEnv = System.getenv()['BUILD_ARCH_LIST']
 def buildAbis = new ArrayList<String>()
 
 if (!buildAbisEnv) {
-    buildAbis.addAll(['mips', 'armeabi-v7a','x86', 'x86_64', 'arm64-v8a', 'mips64'])
+    buildAbis.addAll(['mips', 'armeabi-v7a','x86'/*, 'x86_64'*/, 'arm64-v8a', 'mips64'])
 } else {
     buildAbis.addAll(buildAbisEnv.split(" "))
 }
@@ -84,6 +84,7 @@ model {
         moduleName = "openapoc"
         toolchain = "gcc"
         stl = 'c++_static'
+        platformVersion = 19
         abiFilters.addAll(buildAbis)
         // sdl includes
         CFlags.add("-I${file("src/main/jni/SDL/include")}".toString())
@@ -97,9 +98,102 @@ model {
         // physfs includes
         CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/physfs/src")}".toString())
+        // boost::locale includes
+        CFlags.add("-I${file("src/main/jni/boost_libs/locale/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/locale/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/format/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/format/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/detail/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/detail/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/config/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/config/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/assert/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/assert/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/optional/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/optional/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/core/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/core/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/static_assert/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/static_assert/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/type_traits/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/type_traits/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/mpl/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/mpl/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/move/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/move/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/utility/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/utility/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/throw_exception/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/throw_exception/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/preprocessor/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/preprocessor/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/smart_ptr/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/smart_ptr/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/predef/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/predef/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/iterator/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/iterator/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/function/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/function/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/integer/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/integer/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/type_index/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/type_index/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/bind/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/bind/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/thread/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/thread/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/system/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/system/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/date_time/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/date_time/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/chrono/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/chrono/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/ratio/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/ratio/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/lexical_cast/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/lexical_cast/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/range/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/range/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/concept_check/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/concept_check/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/numeric_conversion/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/numeric_conversion/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/array/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/array/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/container/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/container/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/intrusive/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/intrusive/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/math/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/math/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/io/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/io/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/functional/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/functional/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/tokenizer/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/tokenizer/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/multiprecision/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/multiprecision/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/unordered/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/unordered/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/atomic/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/atomic/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/tuple/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/tuple/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/rational/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/rational/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/exception/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/exception/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/align/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/align/include")}".toString())
+        CFlags.add("-I${file("src/main/jni/boost_libs/algorithm/include")}".toString())
+        cppFlags.add("-I${file("src/main/jni/boost_libs/algorithm/include")}".toString())
         // icu55 includes
-        CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
-        cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/icu55/source/common")}".toString())
+        CFlags.add("-I${file("src/main/jni/icu55/source/common")}".toString())
+        cppFlags.add("-I${file("src/main/jni/icu55/source/common")}".toString())
+        CFlags.add("-I${file("src/main/jni/icu55/source/i18n")}".toString())
+        cppFlags.add("-I${file("src/main/jni/icu55/source/i18n")}".toString())
         // tinyxml includes
         CFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
         cppFlags.add("-I${file("src/main/jni/OpenApoc/dependencies/tinyxml2")}".toString())
@@ -120,9 +214,11 @@ model {
         cppFlags.addAll(["-DLOAD_BMP", "-DLOAD_GIF", "-DLOAD_LBM", "-DLOAD_PCX", "-DLOAD_PNM", "-DLOAD_TGA", "-DLOAD_XCF", "-DLOAD_XPM", "-DLOAD_XV"])
         // icu55
         CFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
-        CFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
+        CFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION", "-DU_DISABLE_RENAMING", "-DU_I18N_IMPLEMENTATION", "-DU_STATIC_IMPLEMENTATION"])
         cppFlags.addAll(["-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\""])
-        cppFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION"])
+        cppFlags.addAll(["-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION", "-DU_DISABLE_RENAMING", "-DU_I18N_IMPLEMENTATION", "-DU_STATIC_IMPLEMENTATION"])
+        CFlags.addAll(["-DBOOST_LOCALE_NO_POSIX_BACKEND", "-DBOOST_LOCALE_NO_WINAPI_BACKEND", "-DBOOST_LOCALE_WITH_ICU", "-DUSE_DL_PREFIX"])
+        cppFlags.addAll(["-DBOOST_LOCALE_NO_POSIX_BACKEND", "-DBOOST_LOCALE_NO_WINAPI_BACKEND", "-DBOOST_LOCALE_WITH_ICU", "-DUSE_DL_PREFIX"])
         // physfs
         CFlags.addAll(["-DPHYSFS_SUPPORTS_ISO9660"])
         // openapoc
@@ -171,13 +267,43 @@ model {
                     exclude '**/icu55/source/config/**'
                     exclude '**/icu55/source/data/**'
                     exclude '**/icu55/source/extra/**'
-                    exclude '**/icu55/source/i18n/**'
                     exclude '**/icu55/source/io/**'
                     exclude '**/icu55/source/layout/**'
                     exclude '**/icu55/source/layoutex/**'
                     exclude '**/icu55/source/samples/**'
                     exclude '**/icu55/source/test/**'
                     exclude '**/icu55/source/tools/**'
+                    // boost_libs excludes
+                    exclude '**/boost_libs/**/bind/**'
+                    exclude '**/boost_libs/**/build/**'
+                    exclude '**/boost_libs/**/bench/**'
+                    exclude '**/boost_libs/**/benchmark/**'
+                    exclude '**/boost_libs/**/concept_check/**'
+                    exclude '**/boost_libs/**/config/**'
+                    exclude '**/boost_libs/**/doc/**'
+                    exclude '**/boost_libs/**/example/**'
+                    exclude '**/boost_libs/**/examples/**'
+                    exclude '**/boost_libs/**/perf/**'
+                    exclude '**/boost_libs/**/performance/**'
+                    exclude '**/boost_libs/**/test/**'
+                    exclude '**/boost_libs/**/tools/**'
+                    exclude '**/boost_libs/**/tutorial/**'
+                    exclude '**/boost_libs/**/static_assert/**'
+                    exclude '**/boost_libs/**/stopwatches/**'
+                    exclude '**/boost_libs/**/utility/**'
+                    exclude '**/boost_libs/**/win32/**'
+                    //exclude '**/boost_libs/locale/src/icu/**'
+                    exclude '**/boost_libs/locale/src/posix/**'
+                    exclude '**/boost_libs/locale/src/win32/**'
+                    exclude '**/boost_libs/tokenizer/**'
+                    exclude '**/boost_libs/math/src/**'
+                    exclude '**/boost_libs/math/dot_net_example/**'
+                    exclude '**/boost_libs/math/minimax/**'
+                    exclude '**/boost_libs/math/reporting/**'
+                    exclude '**/boost_libs/mpl/preprocessed/**'
+                    exclude '**/boost_libs/container/src/**'
+                    exclude '**/boost_libs/thread/src/pthread/once.cpp'
+                    exclude '**/boost_libs/**/reporting/**'
                     // physfs excludes
                     exclude '**/physfs/extras/**'
                     exclude '**/physfs/src/lzma/**'

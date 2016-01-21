@@ -7,7 +7,7 @@ APP_LDFLAGS += -latomic -Wl,--threads
 # Use latest available clang toolchain
 NDK_TOOLCHAIN_VERSION := clang
 
-APP_OPTIM := debug
+APP_OPTIM := release
 
 # Build for 32-bit architectures by default (64-bit ones are not supported by Allegro5)
 ifeq ($(BUILD_ARCH_LIST),)
