@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import org.sfalexrog.openapoc.config.Config;
@@ -33,7 +32,11 @@ public class PreloaderActivity extends Activity {
         setContentView(R.layout.activity_preloader);
         config = Config.init(this);
         unzipper = new AssetUnzipper(this);
-        if (isConfigSane()) {
+        checkSanity();
+    }
+
+    private void onSanityCheckComplete(boolean isSane) {
+        if (isSane) {
             runGame();
         } else {
             runConfig();
@@ -47,12 +50,7 @@ public class PreloaderActivity extends Activity {
             case REQCODE_CONFIG:
                 // Returning from config: attempt to start the game proper?
                 // Check the config for sanity
-                if (isConfigSane()) {
-                    runGame();
-                } else {
-                    // return the user to the config screen if something is screwy
-                    runConfig();
-                }
+                checkSanity();
                 break;
             case REQCODE_GAME:
                 // TODO: Implement a successful/unsuccessful loading check
@@ -63,7 +61,7 @@ public class PreloaderActivity extends Activity {
         }
     }
 
-    private boolean isConfigSane() {
+    private void checkSanity() {
         // Configuration checks!
         // Check if ISO is found (it _COULD_ have the wrong MD5, but hey,
         // why would you break the game deliberately?!
@@ -72,7 +70,7 @@ public class PreloaderActivity extends Activity {
             isoFile = new File(config.getOption(Config.Option.RES_SYSTEM_CD_PATH));
         }
         if (!isoFile.exists()) {
-            return false;
+            onSanityCheckComplete(false);
         }
         // Check if our data dir even exists
         File dataDir = new File(config.getOption(Config.Option.RES_LOCAL_DATA_DIR));
@@ -80,20 +78,15 @@ public class PreloaderActivity extends Activity {
             dataDir = new File(config.getOption(Config.Option.RES_SYSTEM_DATA_DIR));
         }
         if (!dataDir.exists()) {
-            return false;
+            onSanityCheckComplete(false);
         }
         // TODO: Add more checks?
         // Update data if required
         if (needsUpdating()) {
-            try {
-                new DataUnpackerTask().execute(config.getOption(Config.Option.RES_LOCAL_DATA_DIR)).get();
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Unpacking task interrupted (how did you even do this?)", e);
-            } catch (ExecutionException e) {
-                Log.e(TAG, "Execution exception during unpacking task", e);
-            }
+            new DataUnpackerTask().execute(config.getOption(Config.Option.RES_LOCAL_DATA_DIR));
+        } else {
+            onSanityCheckComplete(true);
         }
-        return true;
     }
 
     private boolean needsUpdating() {
@@ -177,6 +170,7 @@ public class PreloaderActivity extends Activity {
             progressDialog.dismiss();
             Config.getInstance().setOption(Config.Option.RES_LOCAL_DATA_DIR, dataPath);
             Toast.makeText(PreloaderActivity.this, "Unpacked assets to " + dataPath, Toast.LENGTH_LONG);
+            onSanityCheckComplete(true);
         }
     }
 
