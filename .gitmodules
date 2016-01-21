@@ -6,7 +6,7 @@
 	url = https://github.com/sfalexrog/allegro5
 [submodule "OpenApoc/src/main/jni/boost_libs/locale"]
 	path = OpenApoc/src/main/jni/boost_libs/locale
-	url = https://github.com/boostorg/locale
+	url = https://github.com/sfalexrog/locale
 [submodule "OpenApoc/src/main/jni/boost_libs/format"]
 	path = OpenApoc/src/main/jni/boost_libs/format
 	url = https://github.com/boostorg/format
