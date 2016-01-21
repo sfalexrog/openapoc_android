@@ -1,20 +1,24 @@
 package org.sfalexrog.openapoc;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import org.sfalexrog.openapoc.config.Config;
 import org.sfalexrog.openapoc.config.DataChecker;
@@ -33,7 +37,7 @@ import java.security.NoSuchAlgorithmException;
 
 import ar.com.daidalos.afiledialog.FileChooserDialog;
 
-public class ConfigActivity extends Activity {
+public class ConfigActivity extends AppCompatActivity {
 
     private static final String TAG = "ConfigActivity";
 
@@ -47,7 +51,11 @@ public class ConfigActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Config.init(this);
+
         setContentView(R.layout.activity_config);
+
+        Toolbar cfgToolbar = (Toolbar) findViewById(R.id.configToolbar);
+        setSupportActionBar(cfgToolbar);
 
         fileDialog = new FileChooserDialog(this, Config.getInstance().getOption(Config.Option.RES_LOCAL_DATA_DIR));
         fileDialog.setShowFullPath(true);
@@ -56,16 +64,24 @@ public class ConfigActivity extends Activity {
         listView = (ListView) findViewById(R.id.configOptionListView);
         listView.setAdapter(new ConfigAdapter(this));
         listView.setOnItemClickListener(new ListItemDispatcher());
-        Button startButton = (Button) findViewById(R.id.buttonStart);
-        startButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setResult(RESULT_OK);
-                        finish();
-                    }
-                }
-        );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_start, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_start:
+                setResult(RESULT_OK);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     class ListItemDispatcher implements ListView.OnItemClickListener {
@@ -73,7 +89,7 @@ public class ConfigActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Adapter optionAdapter = parent.getAdapter();
             ConfigOption option = (ConfigOption) optionAdapter.getItem(position);
-            switch(option.getOption()) {
+            switch (option.getOption()) {
                 case LANGUAGE:
                     break;
                 case RES_LOCAL_DATA_DIR:
