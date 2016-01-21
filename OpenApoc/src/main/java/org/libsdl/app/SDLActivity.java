@@ -1222,7 +1222,14 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     mouseButton = 1;    // oh well.
                 }
             }
-            SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
+            if (action == MotionEvent.ACTION_SCROLL) {
+                SDLActivity.onNativeMouse(mouseButton,
+                        action,
+                        event.getAxisValue(MotionEvent.AXIS_HSCROLL),
+                        event.getAxisValue(MotionEvent.AXIS_VSCROLL));
+            } else {
+                SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
+            }
         } else {
             switch(action) {
                 case MotionEvent.ACTION_MOVE:
