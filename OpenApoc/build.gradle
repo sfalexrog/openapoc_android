@@ -26,7 +26,7 @@ def buildAbisEnv = System.getenv()['BUILD_ARCH_LIST']
 def buildAbis = new ArrayList<String>()
 
 if (!buildAbisEnv) {
-    buildAbis.addAll(['mips', 'armeabi-v7a','x86', 'x86_64', 'arm64-v8a', 'mips64'])
+    buildAbis.addAll(['mips', 'armeabi-v7a','x86', 'x86_64', 'arm64-v8a', /*'mips64'*/])
 } else {
     buildAbis.addAll(buildAbisEnv.split(" "))
 }
