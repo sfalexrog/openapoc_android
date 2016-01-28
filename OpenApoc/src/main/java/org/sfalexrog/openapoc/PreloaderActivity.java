@@ -83,7 +83,14 @@ public class PreloaderActivity extends Activity {
         // TODO: Add more checks?
         // Update data if required
         if (needsUpdating()) {
-            new DataUnpackerTask().execute(config.getOption(Config.Option.RES_LOCAL_DATA_DIR));
+            // RES_LOCAL_DATA_DIR contains path to the contents of data directory, but
+            // the archive itself contains a 'data' dir. We have to strip the LOCAL_DATA_DIR
+            // from the ending /data.
+            String unpackPath = config.getOption(Config.Option.RES_LOCAL_DATA_DIR);
+            if (unpackPath.endsWith("/data")) {
+                unpackPath = unpackPath.substring(0, unpackPath.length() - "/data".length());
+            }
+            new DataUnpackerTask().execute(unpackPath);
         } else {
             onSanityCheckComplete(true);
         }
