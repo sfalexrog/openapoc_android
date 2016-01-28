@@ -30,7 +30,9 @@ public class Config {
         VISUAL_RENDERERS("Visual.Renderers", "GLES_3_0:GLES_2_0", true, false),
         AUDIO_BACKENDS("Audio.Backends", "SDLRaw:allegro:null", true, false),
         FRAMEWORK_THREADPOOL_SIZE("Framework.TreadPoolSize", "0", true, false),
-        ANDROID_DATA_HASH("Android.DataHash", "Undefined", false, false);
+        ANDROID_DATA_HASH("Android.DataHash", "Undefined", false, false),
+        VISUAL_SCALE_X("Visual.ScaleX", "100", true, true),
+        VISUAL_SCALE_Y("Visual.ScaleY", "100", true, true);
 
         private final String key;
         private final String defaultValue;
