@@ -27,7 +27,7 @@ install:
 before_script:
   - ./gradlew clean --continue
 script:
-  - ./gradlew assembleDebug -PtaskThreads=2
+  - ./gradlew assembleDebug --max-workers=2
 android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
