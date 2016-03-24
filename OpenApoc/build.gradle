@@ -26,7 +26,7 @@ def buildAbisEnv = System.getenv()['BUILD_ARCH_LIST']
 def buildAbis = new ArrayList<String>()
 
 if (!buildAbisEnv) {
-    buildAbis.addAll(['mips', 'armeabi-v7a','x86', 'x86_64', 'arm64-v8a', /*'mips64'*/])
+    buildAbis.addAll([/*'mips',*/ 'armeabi-v7a'/*,'x86'*/, /*'x86_64',*/ /*'arm64-v8a',*/ /*'mips64'*/])
 } else {
     buildAbis.addAll(buildAbisEnv.split(" "))
 }
@@ -61,7 +61,7 @@ build.dependsOn packData
 
 model {
 
-    def signingConf
+//    def signingConf
 
     android {
         compileSdkVersion = 22
@@ -74,6 +74,15 @@ model {
             versionCode = 1
             versionName = "1.0"
         }
+
+        signingConfigs {
+            release {
+                keyAlias 'page'
+                keyPassword 'Patata00'
+                storeFile file('/home/sf/devel/openapoc_android/OpenApoc/.keystore')
+                storePassword 'Patata00'
+            }
+        }
     }
 
     android.lintOptions {
@@ -83,7 +92,9 @@ model {
     android.ndk {
         moduleName = "openapoc"
         toolchain = "gcc"
+        //toolchainVersion = "3.8"
         stl = 'gnustl_static'
+        //debuggable = true
         //platformVersion = 19
         abiFilters.addAll(buildAbis)
         // sdl includes
@@ -228,6 +239,9 @@ model {
         cppFlags.add("-std=c++11")
         cppFlags.add("-frtti")
         cppFlags.add("-fexceptions")
+        CFlags.addAll(["-Ofast"/*, "-flto", "-marm"*/])
+        cppFlags.addAll(["-Ofast"/*, "-flto", "-marm"*/])
+        //ldFlags.addAll(["-flto", "-marm"])
 
         //CFlags.addAll(["-fsanitize=address", "-fno-omit-frame-pointer"])
         //cppFlags.addAll(["-fsanitize=address", "-fno-omit-frame-pointer"])
@@ -316,6 +330,15 @@ model {
                     // glm excludes
                     exclude '**/glm/test/**'
                     exclude '**/glm/detail/dummy.cpp'
+                    // miniz excludes
+                    exclude '**/miniz/example*.c'
+                    exclude '**/miniz/miniz_tester.cpp'
+                    exclude '**/miniz/tinfl.c'
+                    exclude '**/miniz/miniz.c'
+                    // pugixml excludes
+                    exclude '**/pugixml/docs/**'
+                    exclude '**/pugixml/scrpts/**'
+                    exclude '**/pugixml/tests/**'
                     // OpenApoc excludes
                     exclude '**/OpenApoc/tests/**'
                     exclude '**/OpenApoc/framework/render/gl20/**'
@@ -328,27 +351,27 @@ model {
     android.buildTypes {
         release {
             minifyEnabled = false
-            if (signing.enabled) {
-                signingConfig = signingConf
-            }
+//            if (signing.enabled) {
+//                signingConfig = signingConf
+//            }
         }
     }
 
-    if (signing.enabled) {
+//    if (signing.enabled) {
         android.signingConfigs {
             create("release") {
                 storeFile = file(signing.storeFilePath)
                 storePassword = signing.storePassword
                 keyAlias = signing.keyAlias
                 keyPassword = signing.keyPassword
-                signingConf = it
+//                signingConf = it
             }
         }
-    }
+//    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
