@@ -7,13 +7,13 @@ addons:
 env:
 # Build for all suppported architectures in parallel
   - PLATFORM='Mips' BUILD_TYPE='Debug'
-  - PLATFORM='Armeabi-v7a'BUILD_TYPE='Debug'
+  - PLATFORM='Armv7-a'BUILD_TYPE='Debug'
   - PLATFORM='X86' BUILD_TYPE='Debug'
   - PLATFORM='X86_64' BUILD_TYPE='Debug'
   - PLATFORM='Arm64-v8a' BUILD_TYPE='Debug'
 # TODO: Check if there's a way to have "orthogonal" environment variables
   - PLATFORM='Mips' BUILD_TYPE='Release'
-  - PLATFORM='Armeabi-v7a'BUILD_TYPE='Release'
+  - PLATFORM='Armv7-a'BUILD_TYPE='Release'
   - PLATFORM='X86' BUILD_TYPE='Release'
   - PLATFORM='X86_64' BUILD_TYPE='Release'
   - PLATFORM='Arm64-v8a' BUILD_TYPE='Release'
