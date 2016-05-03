@@ -24,6 +24,8 @@ public class Config {
         LANGUAGE ("Language", "en_gb", true, true),
         GAMERULES ("GameRules", "XCOMAPOC.XML", true, true),
         RES_LOCAL_DATA_DIR("Resource.LocalDataDir", null, true, true),
+        // "apkfs://" is a magic value for PhysFS apk archiver module
+        //RES_SYSTEM_DATA_DIR("Resource.SystemDataDir", "thisfile.apkfs", true, false),
         RES_SYSTEM_DATA_DIR("Resource.SystemDataDir", null, true, false),
         RES_LOCAL_CD_PATH("Resource.LocalCDPath", null, true, false),
         RES_SYSTEM_CD_PATH("Resource.SystemCDPath", null, true, false),

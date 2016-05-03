@@ -266,7 +266,7 @@ public class ConfigActivity extends AppCompatActivity {
                 }
             });
             dataPath = params[0];
-            unzipper.unzipAssets(dataPath);
+            //unzipper.unzipAssets(dataPath);
             return null;
         }
 
@@ -295,7 +295,7 @@ public class ConfigActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             progressDialog.dismiss();
             ConfigActivity.this.fileDialog.dismiss();
-            Config.getInstance().setOption(Config.Option.RES_LOCAL_DATA_DIR, dataPath + "/data");
+            Config.getInstance().setOption(Config.Option.RES_LOCAL_DATA_DIR, dataPath);
             Toast.makeText(ConfigActivity.this, "Unpacked assets to " + dataPath, Toast.LENGTH_LONG);
             ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
         }

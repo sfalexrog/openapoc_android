@@ -1,5 +1,7 @@
 package org.sfalexrog.openapoc;
 
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,10 @@ public class OpenApocActivity extends SDLActivity {
 
     private final static String TAG = "OpenApocActivity";
 
+    private static OpenApocActivity mOpenApocActivity;
+
+    private AssetManager assetManager;
+
     static {
         /*System.loadLibrary("physfs");
         System.loadLibrary("allegro");
@@ -24,11 +30,21 @@ public class OpenApocActivity extends SDLActivity {
 
     private Config config;
 
+    private boolean extractionRun;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(android.R.style.Theme_Black_NoTitleBar);
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if (intent != null) {
+            extractionRun = intent.getBooleanExtra("GenerateRulesets", false);
+        } else {
+            extractionRun = false;
+        }
         config = Config.init(this);
+        assetManager = getAssets();
+        mOpenApocActivity = this;
     }
 
     @Override
@@ -39,6 +55,12 @@ public class OpenApocActivity extends SDLActivity {
     @Override
     protected String[] getArguments() {
         List<String> argsList = new ArrayList<>();
+
+        if (extractionRun) {
+            argsList.add("--extract-data");
+        }
+        argsList.add("--enable-tracing");
+
         for (Config.Option option : Config.Option.values()) {
             if (option.isPassed()) {
                 argsList.add(option.key() + "=" + config.getOption(option));

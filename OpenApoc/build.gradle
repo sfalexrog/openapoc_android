@@ -24,7 +24,7 @@ if (file('signing.properties').exists()) {
 def getFolder(res) {
     return file("src/main/jni/OpenApoc/${res}")
 }
-
+/*
 tasks.withType(Zip) {
     zTask ->
         zTask.doLast {
@@ -45,6 +45,17 @@ task packData(description: 'Update data files.') {
         zip.into res
         zip.execute()
     }
+}*/
+
+task packData(description: 'Update data files') {
+    ['data'].each { String res ->
+        def cp = task("cp" + res, type: Copy)
+        cp.doFirst { println("Copying ${res}...") }
+        //cp.destinationDir = file("src/main/assets")
+        cp.from getFolder(res)
+        cp.into file("src/main/assets")
+        cp.execute()
+    }
 }
 
 build.dependsOn packData
@@ -64,13 +75,12 @@ def nativeDebugFlags = [
 ]
 
 def nativeReleaseFlags = [
-        "-flto",
+        //"-flto",
         "-O2",
-        "-g",
-        "-fomit-frame-pointer",
+        "-fno-omit-frame-pointer",
         "-fstrict-aliasing",
-        "-funswitch-loops",
-        "-finline-limit=300"
+        //"-funswitch-loops",
+        //"-finline-limit=300"
 ]
 
 // Paths to header files
@@ -127,6 +137,10 @@ def nativeDepDirs = [
         file("src/main/jni/boost_libs/exception/include"),
         file("src/main/jni/boost_libs/align/include"),
         file("src/main/jni/boost_libs/algorithm/include"),
+        file("src/main/jni/boost_libs/lockfree/include"),
+        file("src/main/jni/boost_libs/parameter/include"),
+        file("src/main/jni/boost_libs/filesystem/include"),
+        file("src/main/jni/boost_libs/uuid/include"),
         // icu55 includes,
         file("src/main/jni/icu55/source/common"),
         file("src/main/jni/icu55/source/i18n"),
@@ -213,7 +227,7 @@ model {
                     abiFilters.add("armeabi-v7a")
                     [CFlags, cppFlags, ldFlags].each {
                         flags ->
-                            flags.addAll(["-marm", "-march=armv7-a", "-mfloat-abi=softfp", "-mfpu=neon-vfpv4"])
+                            flags.addAll(["-marm", "-march=armv7-a", "-mfloat-abi=softfp", "-mfpu=neon"])
                     }
                 }
             }
@@ -266,9 +280,9 @@ model {
 
     android.ndk {
         moduleName = "openapoc"
-        toolchain = "gcc"
+        toolchain = "clang"
         //toolchainVersion = "4.9"
-        stl = 'gnustl_static'
+        stl = 'c++_static'
 
         // Add common file paths
         [CFlags, cppFlags].each {
@@ -283,6 +297,14 @@ model {
         cppFlags.add("-std=c++11")
         cppFlags.add("-frtti")
         cppFlags.add("-fexceptions")
+
+        // threads!
+        [CFlags, cppFlags, ldFlags].each {
+            Collection c ->
+                c.add("-pthread")
+        }
+
+        ldFlags.addAll(["-lc++abi", "-landroid_support", "-lunwind"])
 
         ldLibs.addAll(["log", "EGL", "GLESv1_CM", "GLESv2", "GLESv3", "OpenSLES", "android", "m"])
 
@@ -327,6 +349,7 @@ model {
                     // boost_libs excludes
                     exclude '**/boost_libs/**/bind/**'
                     exclude '**/boost_libs/**/build/**'
+                    exclude '**/boost_libs/**/bug/**'
                     exclude '**/boost_libs/**/bench/**'
                     exclude '**/boost_libs/**/benchmark/**'
                     exclude '**/boost_libs/**/concept_check/**'
@@ -381,6 +404,7 @@ model {
                     exclude '**/OpenApoc/tests/**'
                     exclude '**/OpenApoc/framework/render/gl20/**'
                     exclude '**/OpenApoc/framework/render/gl30/**'
+                    exclude '**/OpenApoc/tools/**'
                 }
             }
         }

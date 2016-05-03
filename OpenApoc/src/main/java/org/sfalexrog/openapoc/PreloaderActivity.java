@@ -119,9 +119,35 @@ public class PreloaderActivity extends Activity {
         startActivityForResult(intent, REQCODE_CONFIG);
     }
 
+    private boolean needsDataExtraction() {
+        String rulesetName = "/data/difficulty{$count}_patched.zip";
+        for (int i = 1; i <= 5; i++)
+        {
+            String currentRulesetName = rulesetName.replace("{$count}", Integer.toString(i));
+            Log.i(TAG, "Checking for file: " + currentRulesetName);
+            File currentRulesetFile = new File(Config.Option.RES_LOCAL_DATA_DIR + currentRulesetName);
+            if (!currentRulesetFile.exists()) {
+                Log.i(TAG, "Could not find file: " + currentRulesetName);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void runGame() {
+        //if (needsDataExtraction()) {
+        //    Log.i(TAG, "Running data extraction pass");
+        //    runDataExtraction();
+        //} else {
+            Intent intent = new Intent(this, OpenApocActivity.class);
+            startActivityForResult(intent, REQCODE_GAME);
+        //}
+    }
+
+    private void runDataExtraction() {
         Intent intent = new Intent(this, OpenApocActivity.class);
-        startActivityForResult(intent, REQCODE_GAME);
+        intent.putExtra("GenerateRulesets", true);
+        startActivityForResult(intent, REQCODE_CONFIG);
     }
 
     class DataUnpackerTask extends AsyncTask<String, String, Void> {

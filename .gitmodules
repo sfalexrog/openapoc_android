@@ -142,3 +142,9 @@
 [submodule "OpenApoc/src/main/jni/boost_libs/algorithm"]
 	path = OpenApoc/src/main/jni/boost_libs/algorithm
 	url = https://github.com/boostorg/algorithm
+[submodule "OpenApoc/src/main/jni/boost_libs/filesystem"]
+	path = OpenApoc/src/main/jni/boost_libs/filesystem
+	url = https://github.com/boostorg/filesystem
+[submodule "OpenApoc/src/main/jni/boost_libs/uuid"]
+	path = OpenApoc/src/main/jni/boost_libs/uuid
+	url = https://github.com/boostorg/uuid

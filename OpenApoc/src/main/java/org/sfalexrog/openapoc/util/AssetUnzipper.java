@@ -145,6 +145,9 @@ public class AssetUnzipper {
                         } else {
                             byte[] buffer = new byte[8192];
                             int length;
+                            File parent = outFile.getParentFile();
+                            parent.mkdirs();
+                            outFile.createNewFile();
                             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(outFile));
                             while((length = assetZip.read(buffer)) != -1) {
                                 os.write(buffer, 0, length);
