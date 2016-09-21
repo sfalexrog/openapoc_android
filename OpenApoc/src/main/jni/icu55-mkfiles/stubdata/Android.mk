@@ -22,7 +22,7 @@ LOCAL_PATH:= $(call my-dir)
 
 # Derive a string like 'icudt 48l.dat' from a path like 'external/icu/icu4c/source/stubdata/icudt 48l.dat'
 #stubdata_path:= $(call my-dir)
-stubdata_path := $(LOCAL_PATH)/../../OpenApoc/dependencies/icu55/source/stubdata
+stubdata_path := $(LOCAL_PATH)/../../icu55/source/stubdata
 dat_file := $(notdir $(wildcard $(stubdata_path)/*.dat))
 
 include $(CLEAR_VARS)

@@ -48,7 +48,7 @@ public class Config {
                 if (key.contains("DataDir")) {
                     this.defaultValue = externalStoragePath + "/OpenApoc/data";
                 } else if (key.contains("CDPath")) {
-                    this.defaultValue = externalStoragePath + "/OpenApoc/cd.iso";
+                    this.defaultValue = externalStoragePath + "/OpenApoc/XCOM.cue";
                 } else {
                     this.defaultValue = null;
                 }

@@ -15,8 +15,7 @@
 
 LOCAL_PATH:= $(call my-dir)
 
-# Assume icu location is OpenApoc/dependencies/icu55
-ICU_PATH := $(LOCAL_PATH)/../../OpenApoc/dependencies/icu55
+ICU_PATH := $(LOCAL_PATH)/../../icu55
 COMMON_SRC_PATH := $(ICU_PATH)/source/common
 
 #
@@ -143,6 +142,8 @@ local_cflags += -DU_HAVE_NL_LANGINFO_CODESET=0
 local_cflags += -D_REENTRANT
 local_cflags += -DU_COMMON_IMPLEMENTATION
 
+# local_cflags += -DU_DISABLE_RENAMING
+
 local_cflags += -O3 -fvisibility=hidden
 
 #
@@ -169,35 +170,35 @@ include $(BUILD_SHARED_LIBRARY)
 # Build for the host.
 #
 
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES += $(src_files)
-LOCAL_C_INCLUDES += $(c_includes) $(optional_android_logging_includes)
-LOCAL_CFLAGS += $(local_cflags)
-LOCAL_SHARED_LIBRARIES += $(optional_android_logging_libraries)
-LOCAL_LDLIBS += -ldl -lm -lpthread
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := libicuuc-host
-LOCAL_ADDITIONAL_DEPENDENCIES += $(LOCAL_PATH)/Android.mk
-LOCAL_REQUIRED_MODULES += icu-data-host
-LOCAL_MULTILIB := both
-include $(BUILD_HOST_SHARED_LIBRARY)
+#include $(CLEAR_VARS)
+#LOCAL_SRC_FILES += $(src_files)
+#LOCAL_C_INCLUDES += $(c_includes) $(optional_android_logging_includes)
+#LOCAL_CFLAGS += $(local_cflags)
+#LOCAL_SHARED_LIBRARIES += $(optional_android_logging_libraries)
+#LOCAL_LDLIBS += -ldl -lm -lpthread
+#LOCAL_MODULE_TAGS := optional
+#LOCAL_MODULE := libicuuc-host
+#LOCAL_ADDITIONAL_DEPENDENCIES += $(LOCAL_PATH)/Android.mk
+#LOCAL_REQUIRED_MODULES += icu-data-host
+#LOCAL_MULTILIB := both
+#include $(BUILD_HOST_SHARED_LIBRARY)
 
 #
 # Build as a static library against the NDK
 #
 
-include $(CLEAR_VARS)
-LOCAL_SDK_VERSION := 9
-LOCAL_NDK_STL_VARIANT := c++_static
-LOCAL_C_INCLUDES += $(c_includes)
-LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)
-LOCAL_CPP_FEATURES := rtti
-LOCAL_CFLAGS += $(local_cflags) -DPIC -fPIC -frtti
+#include $(CLEAR_VARS)
+#LOCAL_SDK_VERSION := 9
+#LOCAL_NDK_STL_VARIANT := c++_static
+#LOCAL_C_INCLUDES += $(c_includes)
+#LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)
+#LOCAL_CPP_FEATURES := rtti
+#LOCAL_CFLAGS += $(local_cflags) -DPIC -fPIC -frtti
 # Using -Os over -O3 actually cuts down the final executable size by a few dozen kilobytes
-LOCAL_CFLAGS += -Os
-LOCAL_EXPORT_CFLAGS += -DU_STATIC_IMPLEMENTATION=1
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE := libicuuc_static
-LOCAL_SRC_FILES += $(src_files)
-LOCAL_REQUIRED_MODULES += icu-data
-include $(BUILD_STATIC_LIBRARY)
+#LOCAL_CFLAGS += -Os
+#LOCAL_EXPORT_CFLAGS += -DU_STATIC_IMPLEMENTATION=1
+#LOCAL_MODULE_TAGS := optional
+#LOCAL_MODULE := libicuuc_static
+#LOCAL_SRC_FILES += $(src_files)
+#LOCAL_REQUIRED_MODULES += icu-data
+#include $(BUILD_STATIC_LIBRARY)

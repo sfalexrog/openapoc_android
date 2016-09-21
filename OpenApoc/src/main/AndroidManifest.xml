@@ -8,13 +8,15 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.qti.permission.PROFILER" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Platform.AppCompat">
         <activity
             android:name=".PreloaderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
@@ -26,6 +28,7 @@
         </activity>
         <activity android:name=".ConfigActivity" />
         <activity android:name=".OpenApocActivity"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 

@@ -8,7 +8,7 @@ def signing = [
         keyPassword  : 'password'
 ]
 
-apply plugin: 'com.android.model.application'
+apply plugin: 'com.android.application'
 
 if (file('signing.properties').exists()) {
     Properties properties = new Properties()
@@ -24,7 +24,7 @@ if (file('signing.properties').exists()) {
 def getFolder(res) {
     return file("src/main/jni/OpenApoc/${res}")
 }
-
+/*
 tasks.withType(Zip) {
     zTask ->
         zTask.doLast {
@@ -45,355 +45,61 @@ task packData(description: 'Update data files.') {
         zip.into res
         zip.execute()
     }
+}*/
+
+task packData(description: 'Update data files') {
+    ['data'].each { String res ->
+        def cp = task("cp" + res, type: Copy)
+        cp.doFirst { println("Copying ${res}...") }
+        //cp.destinationDir = file("src/main/assets")
+        cp.from getFolder(res)
+        cp.into file("src/main/assets")
+        cp.execute()
+    }
 }
 
 build.dependsOn packData
 
-// Common debug/release flags and defines
-def nativeDebugDefines = [
-        "-UNDEBUG"
-]
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
-def nativeReleaseDefines = [
-        "-DNDEBUG"
-]
 
-def nativeDebugFlags = [
-        "-O0",
-        "-fno-omit-frame-pointer"
-]
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
 
-def nativeReleaseFlags = [
-        "-flto",
-        "-O2",
-        "-g",
-        "-fomit-frame-pointer",
-        "-fstrict-aliasing",
-        "-funswitch-loops",
-        "-finline-limit=300"
-]
-
-// Paths to header files
-def nativeDepDirs = [
-        // sdl
-        file('src/main/jni/SDL/include'),
-        // sdl-mixer includes,
-        file("src/main/jni/SDL_mixer"),
-        // physfs includes,
-        file("src/main/jni/OpenApoc/dependencies/physfs/src"),
-        // boost::locale includes,
-        file("src/main/jni/boost_libs/locale/include"),
-        file("src/main/jni/boost_libs/format/include"),
-        file("src/main/jni/boost_libs/detail/include"),
-        file("src/main/jni/boost_libs/config/include"),
-        file("src/main/jni/boost_libs/assert/include"),
-        file("src/main/jni/boost_libs/optional/include"),
-        file("src/main/jni/boost_libs/core/include"),
-        file("src/main/jni/boost_libs/static_assert/include"),
-        file("src/main/jni/boost_libs/type_traits/include"),
-        file("src/main/jni/boost_libs/mpl/include"),
-        file("src/main/jni/boost_libs/move/include"),
-        file("src/main/jni/boost_libs/utility/include"),
-        file("src/main/jni/boost_libs/throw_exception/include"),
-        file("src/main/jni/boost_libs/preprocessor/include"),
-        file("src/main/jni/boost_libs/smart_ptr/include"),
-        file("src/main/jni/boost_libs/predef/include"),
-        file("src/main/jni/boost_libs/iterator/include"),
-        file("src/main/jni/boost_libs/function/include"),
-        file("src/main/jni/boost_libs/integer/include"),
-        file("src/main/jni/boost_libs/type_index/include"),
-        file("src/main/jni/boost_libs/bind/include"),
-        file("src/main/jni/boost_libs/thread/include"),
-        file("src/main/jni/boost_libs/system/include"),
-        file("src/main/jni/boost_libs/date_time/include"),
-        file("src/main/jni/boost_libs/chrono/include"),
-        file("src/main/jni/boost_libs/ratio/include"),
-        file("src/main/jni/boost_libs/lexical_cast/include"),
-        file("src/main/jni/boost_libs/range/include"),
-        file("src/main/jni/boost_libs/concept_check/include"),
-        file("src/main/jni/boost_libs/numeric_conversion/include"),
-        file("src/main/jni/boost_libs/array/include"),
-        file("src/main/jni/boost_libs/container/include"),
-        file("src/main/jni/boost_libs/intrusive/include"),
-        file("src/main/jni/boost_libs/math/include"),
-        file("src/main/jni/boost_libs/io/include"),
-        file("src/main/jni/boost_libs/functional/include"),
-        file("src/main/jni/boost_libs/tokenizer/include"),
-        file("src/main/jni/boost_libs/multiprecision/include"),
-        file("src/main/jni/boost_libs/unordered/include"),
-        file("src/main/jni/boost_libs/atomic/include"),
-        file("src/main/jni/boost_libs/tuple/include"),
-        file("src/main/jni/boost_libs/rational/include"),
-        file("src/main/jni/boost_libs/exception/include"),
-        file("src/main/jni/boost_libs/align/include"),
-        file("src/main/jni/boost_libs/algorithm/include"),
-        // icu55 includes,
-        file("src/main/jni/icu55/source/common"),
-        file("src/main/jni/icu55/source/i18n"),
-        // tinyxml includes,
-        file("src/main/jni/OpenApoc/dependencies/tinyxml2"),
-        // glm includes,
-        file("src/main/jni/OpenApoc/dependencies/glm"),
-        // openapoc includes,
-        file("src/main/jni/OpenApoc"),
-        file("src/main/jni/openapoc-mkfiles"),
-]
-
-// Common defines (per-module?)
-def nativeDefines = [
-        // sdl
-        "-DGL_GLEXT_PROTOTYPES",
-        // sdl-image (not used anymore?)
-        //"-DLOAD_BMP", "-DLOAD_GIF", "-DLOAD_LBM", "-DLOAD_PCX", "-DLOAD_PNM", "-DLOAD_TGA", "-DLOAD_XCF", "-DLOAD_XPM", "-DLOAD_XV"
-        // icu55
-        "-DICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\"", "-DICU_DATA_DIR=\"/usr/icu\"",
-        "-DU_HAVE_NL_LANGINFO_CODESET=0", "-D_REENTRANT", "-DU_COMMON_IMPLEMENTATION", "-DU_DISABLE_RENAMING", "-DU_I18N_IMPLEMENTATION", "-DU_STATIC_IMPLEMENTATION",
-        "-DBOOST_LOCALE_NO_POSIX_BACKEND", "-DBOOST_LOCALE_NO_WINAPI_BACKEND", "-DBOOST_LOCALE_WITH_ICU", "-DUSE_DL_PREFIX",
-        // physfs
-        "-DPHYSFS_SUPPORTS_ISO9660",
-        // openapoc
-        "-DOPENAPOC_GLES", "-DRENDERERS=\"GLES_3_0:GLES_2_0\"",
-        "-DBROKEN_THREAD_LOCAL"
-]
-
-model {
-
-    android {
-        compileSdkVersion = 22
-        buildToolsVersion = "22.0.1"
-
-        defaultConfig.with {
-            applicationId = "org.sfalexrog.openapoc"
-            minSdkVersion.apiLevel = 15
-            targetSdkVersion.apiLevel = 22
-            versionCode = 1
-            versionName = "1.0"
-        }
-
-        // Each buildType passes its own set of defines and optimization flags
-        buildTypes {
-            debug {
-                ndk {
-                    debuggable = true
-                    [CFlags, cppFlags].each {
-                        flags ->
-                            flags.addAll(nativeDebugDefines)
-                    }
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(nativeDebugFlags)
-                    }
-                }
-            }
-
-            release {
-                minifyEnabled = false
-                ndk {
-                    debuggable = false
-                    [CFlags, cppFlags].each {
-                        flags ->
-                            flags.addAll(nativeReleaseDefines)
-                    }
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(nativeReleaseFlags)
-                    }
-                }
-                if (signing.enabled) {
-                   signingConfig = $("android.signingConfigs.releaseConfig")
-                }
-            }
-        }
-
-        // Each productFlavor corresponds to the specific architecture and should pass
-        // machine flags to compiler and linker
-        productFlavors {
-            create("armv7-a") {
-                ndk {
-                    abiFilters.add("armeabi-v7a")
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(["-marm", "-march=armv7-a", "-mfloat-abi=softfp", "-mfpu=neon-vfpv4"])
-                    }
-                }
-            }
-            create("mips") {
-                ndk {
-                    abiFilters.add("mips")
-                    // FIXME: Ask JonnyH if this is correct
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(["-march=mips32r5", "-mhard-float", ])
-                    }
-                }
-            }
-            create("x86") {
-                ndk {
-                    abiFilters.add("x86")
-                    // FIXME: AFAIK all current x86 devices are Atoms...
-                    // FIXME: Should probably be as close as possible to desktop flags
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(["-march=atom", "-mfpmath=sse", "-mssse3"])
-                    }
-                }
-            }
-            // x86_64 disabled due to segfault in the compiler
-            create("x86_64") {
-                ndk {
-                    abiFilters.add("x86_64")
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags -> flags.addAll("-march=atom", "-mfpmath=sse", "-mssse3")
-                    }
-                }
-            }
-            create("arm64-v8a") {
-                ndk {
-                    // FIXME: Any specific flags I should know about?
-                    abiFilters.add("arm64-v8a")
-                    [CFlags, cppFlags, ldFlags].each {
-                        flags ->
-                            flags.addAll(["-march=armv8-a"])
-                    }
-                }
-            }
         }
     }
 
-    android.lintOptions {
-        abortOnError = false
-    }
+    defaultConfig {
+        applicationId "org.sfalexrog.openapoc"
+        minSdkVersion 19
+        targetSdkVersion 22
+        versionCode = 1
+        versionName = "1.0"
 
-    android.ndk {
-        moduleName = "openapoc"
-        toolchain = "gcc"
-        //toolchainVersion = "4.9"
-        stl = 'gnustl_static'
-
-        // Add common file paths
-        [CFlags, cppFlags].each {
-            Collection c ->
-                nativeDepDirs.each {
-                    dir -> c.add("-I${dir}".toString())
-                }
-                c.addAll(nativeDefines)
-        }
-
-        // misc c++ flags
-        cppFlags.add("-std=c++11")
-        cppFlags.add("-frtti")
-        cppFlags.add("-fexceptions")
-
-        ldLibs.addAll(["log", "EGL", "GLESv1_CM", "GLESv2", "GLESv3", "OpenSLES", "android", "m"])
-
-    }
-
-    android.sources {
-        main {
-            jni {
-                source {
-
-                    srcDir 'src/main/jni'
-                    // sdl2-deps excludes
-                    exclude '**/dependencies/SDL2/**'
-                    // sdl2 excludes
-                    exclude '**/SDL/test/**'
-                    exclude '**/SDL/visualtest/**'
-                    // sdl-image excludes
-                    exclude '**/SDL_image/showimage.c'
-                    exclude '**/SDL_image/external/jpeg-9/**'
-                    exclude '**/SDL_image/external/libpng-1.6.2/**'
-                    exclude '**/SDL_image/external/libwebp-0.3.0/**'
-                    exclude '**/SDL_image/external/tiff-4.0.3/**'
-                    exclude '**/SDL_image/external/zlib-1.2.8/**'
-                    // sdl-mixer excludes
-                    exclude '**/SDL_mixer/external/**'
-                    exclude '**/SDL_mixer/native_midi/**'
-                    exclude '**/SDL_mixer/timidity/**'
-                    exclude '**/SDL_mixer/playmus.c'
-                    exclude '**/SDL_mixer/playwave.c'
-                    // icu55 excludes
-                    exclude '**/icu55/as_is/**'
-                    exclude '**/icu55/source/allinone/**'
-                    exclude '**/icu55/source/config/**'
-                    exclude '**/icu55/source/data/**'
-                    exclude '**/icu55/source/extra/**'
-                    exclude '**/icu55/source/io/**'
-                    exclude '**/icu55/source/layout/**'
-                    exclude '**/icu55/source/layoutex/**'
-                    exclude '**/icu55/source/samples/**'
-                    exclude '**/icu55/source/test/**'
-                    exclude '**/icu55/source/tools/**'
-                    // boost_libs excludes
-                    exclude '**/boost_libs/**/bind/**'
-                    exclude '**/boost_libs/**/build/**'
-                    exclude '**/boost_libs/**/bench/**'
-                    exclude '**/boost_libs/**/benchmark/**'
-                    exclude '**/boost_libs/**/concept_check/**'
-                    exclude '**/boost_libs/**/config/**'
-                    exclude '**/boost_libs/**/doc/**'
-                    exclude '**/boost_libs/**/example/**'
-                    exclude '**/boost_libs/**/examples/**'
-                    exclude '**/boost_libs/**/perf/**'
-                    exclude '**/boost_libs/**/performance/**'
-                    exclude '**/boost_libs/**/test/**'
-                    exclude '**/boost_libs/**/tools/**'
-                    exclude '**/boost_libs/**/tutorial/**'
-                    exclude '**/boost_libs/**/static_assert/**'
-                    exclude '**/boost_libs/**/stopwatches/**'
-                    exclude '**/boost_libs/**/utility/**'
-                    exclude '**/boost_libs/**/win32/**'
-                    //exclude '**/boost_libs/locale/src/icu/**'
-                    exclude '**/boost_libs/locale/src/posix/**'
-                    exclude '**/boost_libs/locale/src/win32/**'
-                    exclude '**/boost_libs/tokenizer/**'
-                    exclude '**/boost_libs/math/src/**'
-                    exclude '**/boost_libs/math/dot_net_example/**'
-                    exclude '**/boost_libs/math/minimax/**'
-                    exclude '**/boost_libs/math/reporting/**'
-                    exclude '**/boost_libs/mpl/preprocessed/**'
-                    exclude '**/boost_libs/container/src/**'
-                    exclude '**/boost_libs/thread/src/pthread/once.cpp'
-                    exclude '**/boost_libs/**/reporting/**'
-                    // physfs excludes
-                    exclude '**/physfs/extras/**'
-                    exclude '**/physfs/src/lzma/**'
-                    exclude '**/physfs/test/**'
-                    exclude '**/physfs/src/platform_windows.c'
-                    exclude '**/physfs/src/platform_beos.cpp'
-                    // tinyxml2 excludes
-                    exclude '**/tinyxml2/contrib/**'
-                    exclude '**/tinyxml2/xmltest.cpp'
-                    // glm excludes
-                    exclude '**/glm/test/**'
-                    exclude '**/glm/detail/dummy.cpp'
-                    // miniz excludes
-                    exclude '**/miniz/example*.c'
-                    exclude '**/miniz/miniz_tester.cpp'
-                    exclude '**/miniz/tinfl.c'
-                    exclude '**/miniz/miniz.c'
-                    exclude '**/miniz/timer.cpp'
-                    // pugixml excludes
-                    exclude '**/pugixml/docs/**'
-                    exclude '**/pugixml/scrpts/**'
-                    exclude '**/pugixml/tests/**'
-                    // OpenApoc excludes
-                    exclude '**/OpenApoc/tests/**'
-                    exclude '**/OpenApoc/framework/render/gl20/**'
-                    exclude '**/OpenApoc/framework/render/gl30/**'
-                }
+        externalNativeBuild {
+            ndkBuild {
+                arguments "NDK_APPLICATION_MK:=src/main/jni/Application.mk"
+                abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
             }
         }
+
     }
 
-    android.signingConfigs {
-        create("releaseConfig") {
-            storeFile = file(signing.storeFilePath)
-            storePassword = signing.storePassword
-            keyAlias = signing.keyAlias
-            keyPassword = signing.keyPassword
+
+    // Each buildType passes its own set of defines and optimization flags
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+android.lintOptions {
+    abortOnError = false
 }
 
 dependencies {
