@@ -1,0 +1,442 @@
+# A CMake file for use only on Android.
+# Based on https://android.googlesource.com/platform/external/icu4c/+/l-preview
+
+cmake_minimum_required(VERSION 3.6)
+project(ICU55droid)
+
+set(ICU_source ${PROJECT_SOURCE_DIR}/source)
+
+set(ICU_common_FILES
+    ${ICU_source}/common/appendable.cpp
+    ${ICU_source}/common/bmpset.cpp
+    ${ICU_source}/common/brkeng.cpp
+    ${ICU_source}/common/brkiter.cpp
+    ${ICU_source}/common/bytestream.cpp
+    ${ICU_source}/common/bytestriebuilder.cpp
+    ${ICU_source}/common/bytestrie.cpp
+    ${ICU_source}/common/bytestrieiterator.cpp
+    ${ICU_source}/common/caniter.cpp
+    ${ICU_source}/common/chariter.cpp
+    ${ICU_source}/common/charstr.cpp
+    ${ICU_source}/common/cmemory.c
+    ${ICU_source}/common/cstring.c
+    ${ICU_source}/common/cwchar.c
+    ${ICU_source}/common/dictbe.cpp
+    ${ICU_source}/common/dictionarydata.cpp
+    ${ICU_source}/common/dtintrv.cpp
+    ${ICU_source}/common/errorcode.cpp
+    ${ICU_source}/common/filterednormalizer2.cpp
+    ${ICU_source}/common/icudataver.c
+    ${ICU_source}/common/icuplug.cpp
+    ${ICU_source}/common/listformatter.cpp
+    ${ICU_source}/common/loadednormalizer2impl.cpp
+    ${ICU_source}/common/locavailable.cpp
+    ${ICU_source}/common/locbased.cpp
+    ${ICU_source}/common/locdispnames.cpp
+    ${ICU_source}/common/locid.cpp
+    ${ICU_source}/common/loclikely.cpp
+    ${ICU_source}/common/locmap.c
+    ${ICU_source}/common/locresdata.cpp
+    ${ICU_source}/common/locutil.cpp
+    ${ICU_source}/common/messagepattern.cpp
+    ${ICU_source}/common/normalizer2.cpp
+    ${ICU_source}/common/normalizer2impl.cpp
+    ${ICU_source}/common/normlzr.cpp
+    ${ICU_source}/common/parsepos.cpp
+    ${ICU_source}/common/patternprops.cpp
+    ${ICU_source}/common/propname.cpp
+    ${ICU_source}/common/propsvec.c
+    ${ICU_source}/common/punycode.cpp
+    ${ICU_source}/common/putil.cpp
+    ${ICU_source}/common/rbbi.cpp
+    ${ICU_source}/common/rbbidata.cpp
+    ${ICU_source}/common/rbbinode.cpp
+    ${ICU_source}/common/rbbirb.cpp
+    ${ICU_source}/common/rbbiscan.cpp
+    ${ICU_source}/common/rbbisetb.cpp
+    ${ICU_source}/common/rbbistbl.cpp
+    ${ICU_source}/common/rbbitblb.cpp
+    ${ICU_source}/common/resbund_cnv.cpp
+    ${ICU_source}/common/resbund.cpp
+    ${ICU_source}/common/ruleiter.cpp
+    ${ICU_source}/common/schriter.cpp
+    ${ICU_source}/common/serv.cpp
+    ${ICU_source}/common/servlk.cpp
+    ${ICU_source}/common/servlkf.cpp
+    ${ICU_source}/common/servls.cpp
+    ${ICU_source}/common/servnotf.cpp
+    ${ICU_source}/common/servrbf.cpp
+    ${ICU_source}/common/servslkf.cpp
+    ${ICU_source}/common/sharedobject.cpp
+    ${ICU_source}/common/simplepatternformatter.cpp
+    ${ICU_source}/common/stringpiece.cpp
+    ${ICU_source}/common/stringtriebuilder.cpp
+    ${ICU_source}/common/uarrsort.c
+    ${ICU_source}/common/ubidi.c
+    ${ICU_source}/common/ubidiln.c
+    ${ICU_source}/common/ubidi_props.c
+    ${ICU_source}/common/ubidiwrt.c
+    ${ICU_source}/common/ubrk.cpp
+    ${ICU_source}/common/ucase.cpp
+    ${ICU_source}/common/ucasemap.cpp
+    ${ICU_source}/common/ucasemap_titlecase_brkiter.cpp
+    ${ICU_source}/common/ucat.c
+    ${ICU_source}/common/uchar.c
+    ${ICU_source}/common/ucharstriebuilder.cpp
+    ${ICU_source}/common/ucharstrie.cpp
+    ${ICU_source}/common/ucharstrieiterator.cpp
+    ${ICU_source}/common/uchriter.cpp
+    ${ICU_source}/common/ucln_cmn.cpp
+    ${ICU_source}/common/ucmndata.c
+    ${ICU_source}/common/ucnv2022.cpp
+    ${ICU_source}/common/ucnv_bld.cpp
+    ${ICU_source}/common/ucnvbocu.cpp
+    ${ICU_source}/common/ucnv.c
+    ${ICU_source}/common/ucnv_cb.c
+    ${ICU_source}/common/ucnv_cnv.c
+    ${ICU_source}/common/ucnv_ct.c
+    ${ICU_source}/common/ucnvdisp.c
+    ${ICU_source}/common/ucnv_err.c
+    ${ICU_source}/common/ucnv_ext.cpp
+    ${ICU_source}/common/ucnvhz.c
+    ${ICU_source}/common/ucnv_io.cpp
+    ${ICU_source}/common/ucnvisci.c
+    ${ICU_source}/common/ucnvlat1.c
+    ${ICU_source}/common/ucnv_lmb.c
+    ${ICU_source}/common/ucnvmbcs.cpp
+    ${ICU_source}/common/ucnvscsu.c
+    ${ICU_source}/common/ucnvsel.cpp
+    ${ICU_source}/common/ucnv_set.c
+    ${ICU_source}/common/ucnv_u16.c
+    ${ICU_source}/common/ucnv_u32.c
+    ${ICU_source}/common/ucnv_u7.c
+    ${ICU_source}/common/ucnv_u8.c
+    ${ICU_source}/common/ucol_swp.cpp
+    ${ICU_source}/common/udata.cpp
+    ${ICU_source}/common/udatamem.c
+    ${ICU_source}/common/udataswp.c
+    ${ICU_source}/common/uenum.c
+    ${ICU_source}/common/uhash.c
+    ${ICU_source}/common/uhash_us.cpp
+    ${ICU_source}/common/uidna.cpp
+    ${ICU_source}/common/uinit.cpp
+    ${ICU_source}/common/uinvchar.c
+    ${ICU_source}/common/uiter.cpp
+    ${ICU_source}/common/ulist.c
+    ${ICU_source}/common/ulistformatter.cpp
+    ${ICU_source}/common/uloc.cpp
+    ${ICU_source}/common/uloc_keytype.cpp
+    ${ICU_source}/common/uloc_tag.c
+    ${ICU_source}/common/umapfile.c
+    ${ICU_source}/common/umath.c
+    ${ICU_source}/common/umutex.cpp
+    ${ICU_source}/common/unames.cpp
+    ${ICU_source}/common/unifiedcache.cpp
+    ${ICU_source}/common/unifilt.cpp
+    ${ICU_source}/common/unifunct.cpp
+    ${ICU_source}/common/uniset_closure.cpp
+    ${ICU_source}/common/uniset.cpp
+    ${ICU_source}/common/uniset_props.cpp
+    ${ICU_source}/common/unisetspan.cpp
+    ${ICU_source}/common/unistr_case.cpp
+    ${ICU_source}/common/unistr_case_locale.cpp
+    ${ICU_source}/common/unistr_cnv.cpp
+    ${ICU_source}/common/unistr.cpp
+    ${ICU_source}/common/unistr_props.cpp
+    ${ICU_source}/common/unistr_titlecase_brkiter.cpp
+    ${ICU_source}/common/unormcmp.cpp
+    ${ICU_source}/common/unorm.cpp
+    ${ICU_source}/common/uobject.cpp
+    ${ICU_source}/common/uprops.cpp
+    ${ICU_source}/common/uresbund.cpp
+    ${ICU_source}/common/ures_cnv.c
+    ${ICU_source}/common/uresdata.c
+    ${ICU_source}/common/usc_impl.c
+    ${ICU_source}/common/uscript.c
+    ${ICU_source}/common/uscript_props.cpp
+    ${ICU_source}/common/uset.cpp
+    ${ICU_source}/common/usetiter.cpp
+    ${ICU_source}/common/uset_props.cpp
+    ${ICU_source}/common/ushape.cpp
+    ${ICU_source}/common/usprep.cpp
+    ${ICU_source}/common/ustack.cpp
+    ${ICU_source}/common/ustrcase.cpp
+    ${ICU_source}/common/ustrcase_locale.cpp
+    ${ICU_source}/common/ustr_cnv.cpp
+    ${ICU_source}/common/ustrenum.cpp
+    ${ICU_source}/common/ustrfmt.c
+    ${ICU_source}/common/ustring.cpp
+    ${ICU_source}/common/ustr_titlecase_brkiter.cpp
+    ${ICU_source}/common/ustrtrns.cpp
+    ${ICU_source}/common/ustr_wcs.cpp
+    ${ICU_source}/common/utext.cpp
+    ${ICU_source}/common/utf_impl.c
+    ${ICU_source}/common/util.cpp
+    ${ICU_source}/common/util_props.cpp
+    ${ICU_source}/common/utrace.c
+    ${ICU_source}/common/utrie2_builder.cpp
+    ${ICU_source}/common/utrie2.cpp
+    ${ICU_source}/common/utrie.cpp
+    ${ICU_source}/common/uts46.cpp
+    ${ICU_source}/common/utypes.c
+    ${ICU_source}/common/uvector.cpp
+    ${ICU_source}/common/uvectr32.cpp
+    ${ICU_source}/common/uvectr64.cpp
+    ${ICU_source}/common/wintz.c
+)
+
+set(ICU_i18n_FILES
+    ${ICU_source}/i18n/alphaindex.cpp
+    ${ICU_source}/i18n/anytrans.cpp
+    ${ICU_source}/i18n/astro.cpp
+    ${ICU_source}/i18n/basictz.cpp
+    ${ICU_source}/i18n/bocsu.cpp
+    ${ICU_source}/i18n/brktrans.cpp
+    ${ICU_source}/i18n/buddhcal.cpp
+    ${ICU_source}/i18n/calendar.cpp
+    ${ICU_source}/i18n/casetrn.cpp
+    ${ICU_source}/i18n/cecal.cpp
+    ${ICU_source}/i18n/chnsecal.cpp
+    ${ICU_source}/i18n/choicfmt.cpp
+    ${ICU_source}/i18n/coleitr.cpp
+    ${ICU_source}/i18n/collationbuilder.cpp
+    ${ICU_source}/i18n/collationcompare.cpp
+    ${ICU_source}/i18n/collation.cpp
+    ${ICU_source}/i18n/collationdatabuilder.cpp
+    ${ICU_source}/i18n/collationdata.cpp
+    ${ICU_source}/i18n/collationdatareader.cpp
+    ${ICU_source}/i18n/collationdatawriter.cpp
+    ${ICU_source}/i18n/collationfastlatinbuilder.cpp
+    ${ICU_source}/i18n/collationfastlatin.cpp
+    ${ICU_source}/i18n/collationfcd.cpp
+    ${ICU_source}/i18n/collationiterator.cpp
+    ${ICU_source}/i18n/collationkeys.cpp
+    ${ICU_source}/i18n/collationroot.cpp
+    ${ICU_source}/i18n/collationrootelements.cpp
+    ${ICU_source}/i18n/collationruleparser.cpp
+    ${ICU_source}/i18n/collationsets.cpp
+    ${ICU_source}/i18n/collationsettings.cpp
+    ${ICU_source}/i18n/collationtailoring.cpp
+    ${ICU_source}/i18n/collationweights.cpp
+    ${ICU_source}/i18n/coll.cpp
+    ${ICU_source}/i18n/compactdecimalformat.cpp
+    ${ICU_source}/i18n/coptccal.cpp
+    ${ICU_source}/i18n/cpdtrans.cpp
+    ${ICU_source}/i18n/csdetect.cpp
+    ${ICU_source}/i18n/csmatch.cpp
+    ${ICU_source}/i18n/csr2022.cpp
+    ${ICU_source}/i18n/csrecog.cpp
+    ${ICU_source}/i18n/csrmbcs.cpp
+    ${ICU_source}/i18n/csrsbcs.cpp
+    ${ICU_source}/i18n/csrucode.cpp
+    ${ICU_source}/i18n/csrutf8.cpp
+    ${ICU_source}/i18n/curramt.cpp
+    ${ICU_source}/i18n/currfmt.cpp
+    ${ICU_source}/i18n/currpinf.cpp
+    ${ICU_source}/i18n/currunit.cpp
+    ${ICU_source}/i18n/dangical.cpp
+    ${ICU_source}/i18n/datefmt.cpp
+    ${ICU_source}/i18n/dcfmtsym.cpp
+    ${ICU_source}/i18n/decContext.c
+    ${ICU_source}/i18n/decfmtst.cpp
+    ${ICU_source}/i18n/decimalformatpattern.cpp
+    ${ICU_source}/i18n/decimfmt.cpp
+    ${ICU_source}/i18n/decNumber.c
+    ${ICU_source}/i18n/digitlst.cpp
+    ${ICU_source}/i18n/dtfmtsym.cpp
+    ${ICU_source}/i18n/dtitvfmt.cpp
+    ${ICU_source}/i18n/dtitvinf.cpp
+    ${ICU_source}/i18n/dtptngen.cpp
+    ${ICU_source}/i18n/dtrule.cpp
+    ${ICU_source}/i18n/esctrn.cpp
+    ${ICU_source}/i18n/ethpccal.cpp
+    ${ICU_source}/i18n/filteredbrk.cpp
+    ${ICU_source}/i18n/fmtable_cnv.cpp
+    ${ICU_source}/i18n/fmtable.cpp
+    ${ICU_source}/i18n/format.cpp
+    ${ICU_source}/i18n/fphdlimp.cpp
+    ${ICU_source}/i18n/fpositer.cpp
+    ${ICU_source}/i18n/funcrepl.cpp
+    ${ICU_source}/i18n/gender.cpp
+    ${ICU_source}/i18n/gregocal.cpp
+    ${ICU_source}/i18n/gregoimp.cpp
+    ${ICU_source}/i18n/hebrwcal.cpp
+    ${ICU_source}/i18n/identifier_info.cpp
+    ${ICU_source}/i18n/indiancal.cpp
+    ${ICU_source}/i18n/inputext.cpp
+    ${ICU_source}/i18n/islamcal.cpp
+    ${ICU_source}/i18n/japancal.cpp
+    ${ICU_source}/i18n/locdspnm.cpp
+    ${ICU_source}/i18n/measfmt.cpp
+    ${ICU_source}/i18n/measunit.cpp
+    ${ICU_source}/i18n/measure.cpp
+    ${ICU_source}/i18n/msgfmt.cpp
+    ${ICU_source}/i18n/name2uni.cpp
+    ${ICU_source}/i18n/nfrs.cpp
+    ${ICU_source}/i18n/nfrule.cpp
+    ${ICU_source}/i18n/nfsubs.cpp
+    ${ICU_source}/i18n/nortrans.cpp
+    ${ICU_source}/i18n/nultrans.cpp
+    ${ICU_source}/i18n/numfmt.cpp
+    ${ICU_source}/i18n/numsys.cpp
+    ${ICU_source}/i18n/olsontz.cpp
+    ${ICU_source}/i18n/persncal.cpp
+    ${ICU_source}/i18n/plurfmt.cpp
+    ${ICU_source}/i18n/plurrule.cpp
+    ${ICU_source}/i18n/quant.cpp
+    ${ICU_source}/i18n/quantityformatter.cpp
+    ${ICU_source}/i18n/rbnf.cpp
+    ${ICU_source}/i18n/rbt.cpp
+    ${ICU_source}/i18n/rbt_data.cpp
+    ${ICU_source}/i18n/rbt_pars.cpp
+    ${ICU_source}/i18n/rbt_rule.cpp
+    ${ICU_source}/i18n/rbt_set.cpp
+    ${ICU_source}/i18n/rbtz.cpp
+    ${ICU_source}/i18n/regexcmp.cpp
+    ${ICU_source}/i18n/regeximp.cpp
+    ${ICU_source}/i18n/regexst.cpp
+    ${ICU_source}/i18n/regextxt.cpp
+    ${ICU_source}/i18n/region.cpp
+    ${ICU_source}/i18n/reldatefmt.cpp
+    ${ICU_source}/i18n/reldtfmt.cpp
+    ${ICU_source}/i18n/rematch.cpp
+    ${ICU_source}/i18n/remtrans.cpp
+    ${ICU_source}/i18n/repattrn.cpp
+    ${ICU_source}/i18n/rulebasedcollator.cpp
+    ${ICU_source}/i18n/scientificnumberformatter.cpp
+    ${ICU_source}/i18n/scriptset.cpp
+    ${ICU_source}/i18n/search.cpp
+    ${ICU_source}/i18n/selfmt.cpp
+    ${ICU_source}/i18n/sharedbreakiterator.cpp
+    ${ICU_source}/i18n/simpletz.cpp
+    ${ICU_source}/i18n/smpdtfmt.cpp
+    ${ICU_source}/i18n/smpdtfst.cpp
+    ${ICU_source}/i18n/sortkey.cpp
+    ${ICU_source}/i18n/strmatch.cpp
+    ${ICU_source}/i18n/strrepl.cpp
+    ${ICU_source}/i18n/stsearch.cpp
+    ${ICU_source}/i18n/taiwncal.cpp
+    ${ICU_source}/i18n/timezone.cpp
+    ${ICU_source}/i18n/titletrn.cpp
+    ${ICU_source}/i18n/tmunit.cpp
+    ${ICU_source}/i18n/tmutamt.cpp
+    ${ICU_source}/i18n/tmutfmt.cpp
+    ${ICU_source}/i18n/tolowtrn.cpp
+    ${ICU_source}/i18n/toupptrn.cpp
+    ${ICU_source}/i18n/translit.cpp
+    ${ICU_source}/i18n/transreg.cpp
+    ${ICU_source}/i18n/tridpars.cpp
+    ${ICU_source}/i18n/tzfmt.cpp
+    ${ICU_source}/i18n/tzgnames.cpp
+    ${ICU_source}/i18n/tznames.cpp
+    ${ICU_source}/i18n/tznames_impl.cpp
+    ${ICU_source}/i18n/tzrule.cpp
+    ${ICU_source}/i18n/tztrans.cpp
+    ${ICU_source}/i18n/ucal.cpp
+    ${ICU_source}/i18n/ucln_in.cpp
+    ${ICU_source}/i18n/ucol.cpp
+    ${ICU_source}/i18n/ucoleitr.cpp
+    ${ICU_source}/i18n/ucol_res.cpp
+    ${ICU_source}/i18n/ucol_sit.cpp
+    ${ICU_source}/i18n/ucsdet.cpp
+    ${ICU_source}/i18n/ucurr.cpp
+    ${ICU_source}/i18n/udat.cpp
+    ${ICU_source}/i18n/udateintervalformat.cpp
+    ${ICU_source}/i18n/udatpg.cpp
+    ${ICU_source}/i18n/ufieldpositer.cpp
+    ${ICU_source}/i18n/uitercollationiterator.cpp
+    ${ICU_source}/i18n/ulocdata.c
+    ${ICU_source}/i18n/umsg.cpp
+    ${ICU_source}/i18n/unesctrn.cpp
+    ${ICU_source}/i18n/uni2name.cpp
+    ${ICU_source}/i18n/unum.cpp
+    ${ICU_source}/i18n/unumsys.cpp
+    ${ICU_source}/i18n/upluralrules.cpp
+    ${ICU_source}/i18n/uregexc.cpp
+    ${ICU_source}/i18n/uregex.cpp
+    ${ICU_source}/i18n/uregion.cpp
+    ${ICU_source}/i18n/usearch.cpp
+    ${ICU_source}/i18n/uspoof_build.cpp
+    ${ICU_source}/i18n/uspoof_conf.cpp
+    ${ICU_source}/i18n/uspoof.cpp
+    ${ICU_source}/i18n/uspoof_impl.cpp
+    ${ICU_source}/i18n/uspoof_wsconf.cpp
+    ${ICU_source}/i18n/utf16collationiterator.cpp
+    ${ICU_source}/i18n/utf8collationiterator.cpp
+    ${ICU_source}/i18n/utmscale.c
+    ${ICU_source}/i18n/utrans.cpp
+    ${ICU_source}/i18n/vtzone.cpp
+    ${ICU_source}/i18n/vzone.cpp
+    ${ICU_source}/i18n/windtfmt.cpp
+    ${ICU_source}/i18n/winnmfmt.cpp
+    ${ICU_source}/i18n/wintzimpl.cpp
+    ${ICU_source}/i18n/zonemeta.cpp
+    ${ICU_source}/i18n/zrule.cpp
+    ${ICU_source}/i18n/ztrans.cpp
+
+)
+
+set(ICU_stubdata_FILES
+    ${ICU_source}/stubdata/stubdata.c
+)
+
+set(ICU_common_INCLUDES
+    ${ICU_source}/common/unicode
+)
+
+set(ICU_i18n_INCLUDES
+    ${ICU_source}/i18n/unicode
+)
+
+add_library(icuuc_droid
+    ${ICU_common_FILES}
+    ${ICU_stubdata_FILES}
+)
+
+add_library(icui18n_droid
+    ${ICU_i18n_FILES}
+)
+
+target_compile_definitions(icuuc_droid
+    PRIVATE
+    "ICU_DATA_DIR_PREFIX_ENV_VAR=\"ANDROID_ROOT\""
+    "ICU_DATA_DIR=\"/usr/icu\""
+    "U_HAVE_NL_LANGINFO_CODESET=0"
+    "_REENTRANT"
+    "U_COMMON_IMPLEMENTATION"
+    "U_STATIC_IMPLEMENTATION=1"
+    "U_SHOW_INTERNAL_API"
+)
+
+target_compile_definitions(icui18n_droid
+    PRIVATE
+    "_REENTRANT"
+    "U_I18N_IMPLEMENTATION"
+    "U_STATIC_IMPLEMENTATION=1"
+    "U_SHOW_INTERNAL_API=1"
+    "U_SHOW_DRAFT_API=1"
+)
+
+target_link_libraries(icui18n_droid
+    PRIVATE
+    icuuc_droid
+)
+
+target_include_directories(icuuc_droid
+    PUBLIC
+    $<BUILD_INTERFACE:${ICU_source}/common>
+)
+
+target_include_directories(icui18n_droid
+    PUBLIC
+    $<BUILD_INTERFACE:${ICU_source}/i18n>
+    PRIVATE
+    ${ICU_source}/common
+)
+
+install(TARGETS icuuc_droid icui18n_droid EXPORT icu_android
+    ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}
+    LIBRARY DESTINATION ${CMAKE_BINARY_DIR}
+    )
+install(EXPORT icu_android DESTINATION lib/icu)
+export(TARGETS icuuc_droid icui18n_droid FILE icu55Config.cmake)
