@@ -46,7 +46,7 @@ task packData(description: 'Update data files.') {
         zip.execute()
     }
 }*/
-
+/*
 task packData(description: 'Update data files') {
     ['data'].each { String res ->
         def cp = task("cp" + res, type: Copy)
@@ -59,35 +59,35 @@ task packData(description: 'Update data files') {
 }
 
 build.dependsOn packData
-
+*/
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
-
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     externalNativeBuild {
-        ndkBuild {
-            path "src/main/jni/Android.mk"
-
+        cmake {
+            path "src/main/jni/CMakeLists.txt"
         }
     }
 
     defaultConfig {
         applicationId "org.sfalexrog.openapoc"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 25
         versionCode = 1
         versionName = "1.0"
 
         externalNativeBuild {
-            ndkBuild {
-                arguments "NDK_APPLICATION_MK:=src/main/jni/Application.mk"
-                abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
+            cmake {
+                //abiFilters "x86"
+                arguments "-DANDROID_STL=c++_static"
+
+                cppFlags "-std=c++11"
+		// OpenApoc defines a lot of targets, we only want the game itself
+                targets "OpenApoc"
             }
         }
-
     }
-
 
     // Each buildType passes its own set of defines and optimization flags
     buildTypes {
@@ -96,6 +96,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    sourceSets {
+        main {
+            // Use SDL's Java activity directly, without pulling it into our source tree
+            java.srcDirs += ['src/main/jni/SDL/android-project/src']
+        }
+    }
+
 }
 
 android.lintOptions {
@@ -105,7 +113,5 @@ android.lintOptions {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:support-v4:22.2.1'
     compile project(':aFileDialog')
 }

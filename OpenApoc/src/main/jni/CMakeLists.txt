@@ -11,6 +11,17 @@ project(OPENAPOC_ANDROID)
 # Build with host cmake, error out if not found
 if(ANDROID)
     # TODO: Parallelize build while staying cross-platform??
+    message("Compiling on ${CMAKE_HOST_SYSTEM_NAME}")
+    set(OPENAPOC_HOST_BUILD_OPTS "")
+    if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+	message("Enabling multi-core build")
+	include(ProcessorCount)
+	ProcessorCount(NUM_THREADS)
+	if(NOT NUM_THREADS EQUAL 0)
+	    message("Enabling ${NUM_THREADS} parallel jobs")
+	    set(OPENAPOC_HOST_BUILD_OPTS "-j${NUM_THREADS}")
+	endif()
+    endif()
     find_program(CMAKE_HOST cmake)
     if (NOT CMAKE_HOST)
         message(WARNING "Could not find host CMake, using one bundled with Android")
@@ -37,7 +48,7 @@ if(ANDROID)
     #execute_process(COMMAND ${CMAKE_HOST} --build ${HOST_BUILD_DIR} --target OpenApoc -- -j4
     #    WORKING_DIRECTORY ${HOST_BUILD_DIR}
     #    )
-    execute_process(COMMAND ${CMAKE_HOST} --build ${HOST_BUILD_DIR} --target extract-data
+    execute_process(COMMAND ${CMAKE_HOST} --build ${HOST_BUILD_DIR} --target extract-data -- ${OPENAPOC_HOST_BUILD_OPTS}
         WORKING_DIRECTORY ${HOST_BUILD_DIR}
     )
 endif()
