@@ -1,12 +1,12 @@
 package org.sfalexrog.openapoc;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
+import android.widget.Toolbar;
 
 import org.sfalexrog.openapoc.config.Config;
 import org.sfalexrog.openapoc.config.DataChecker;
@@ -37,7 +37,7 @@ import java.security.NoSuchAlgorithmException;
 
 import ar.com.daidalos.afiledialog.FileChooserDialog;
 
-public class ConfigActivity extends AppCompatActivity {
+public class ConfigActivity extends Activity {
 
     private static final String TAG = "ConfigActivity";
 
@@ -54,8 +54,8 @@ public class ConfigActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_config);
 
-        Toolbar cfgToolbar = (Toolbar) findViewById(R.id.configToolbar);
-        setSupportActionBar(cfgToolbar);
+        //Toolbar cfgToolbar = (Toolbar) findViewById(R.id.configToolbar);
+        //setSupportActionBar(cfgToolbar);
 
         fileDialog = new FileChooserDialog(this, Config.getInstance().getOption(Config.Option.RES_LOCAL_DATA_DIR));
         fileDialog.setShowFullPath(true);
