@@ -17,23 +17,23 @@ addons:
 env:
 # Build for all suppported architectures in parallel
   - PLATFORM='mips' BUILD_TYPE='Debug'
-  - PLATFORM='armv7-a'BUILD_TYPE='Debug'
+  - PLATFORM='armeabi-v7a'BUILD_TYPE='Debug'
   - PLATFORM='x86' BUILD_TYPE='Debug'
   - PLATFORM='x86_64' BUILD_TYPE='Debug'
   - PLATFORM='arm64-v8a' BUILD_TYPE='Debug'
 # TODO: Check if there's a way to have "orthogonal" environment variables
   - PLATFORM='mips' BUILD_TYPE='Release'
-  - PLATFORM='armv7-a'BUILD_TYPE='Release'
+  - PLATFORM='armeabi-v7a'BUILD_TYPE='Release'
   - PLATFORM='x86' BUILD_TYPE='Release'
   - PLATFORM='x86_64' BUILD_TYPE='Release'
   - PLATFORM='arm64-v8a' BUILD_TYPE='Release'
 
 before_install:
   - yes | ${ANDROID_HOME}/tools/bin/sdkmanager --update
-  - wget --timeout=120 http://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O ndk.zip
-  - sha1sum ndk.zip | grep 0bf02d4e8b85fd770fd7b9b2cdec57f9441f27a2
+  - wget --timeout=120 https://dl.google.com/android/repository/android-ndk-r16-beta1-linux-x86_64.zip -O ndk.zip
+  - sha1sum ndk.zip | grep 20affa8bb6c6ce6128894b0c0ceed370cea2e0c2
   - 7z x ndk.zip > /dev/null
-  - export ANDROID_NDK=$(pwd)/android-ndk-r15c
+  - export ANDROID_NDK=$(pwd)/android-ndk-r16-beta1
   - printf "ndk.dir=$ANDROID_NDK" > local.properties
   - wget http://s2.jonnyh.net/pub/cd_minimal.iso.xz -O OpenApoc/src/main/jni/OpenApoc/data/cd.iso.xz
   - xz -d OpenApoc/src/main/jni/OpenApoc/data/cd.iso.xz
