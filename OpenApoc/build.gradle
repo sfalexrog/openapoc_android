@@ -24,6 +24,17 @@ if (file('signing.properties').exists()) {
 def getFolder(res) {
     return file("src/main/jni/OpenApoc/${res}")
 }
+
+def buildArchEnv = System.getenv()['PLATFORM']
+
+def buildArchList = new ArrayList<String>()
+
+if (!buildArchEnv) {
+    buildArchList.addAll(["armeabi-v7a", "x86", "arm64-v8a", "x86_64"])
+} else {
+    buildArchList.add(buildArchEnv)
+}
+
 /*
 tasks.withType(Zip) {
     zTask ->
@@ -79,7 +90,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                //abiFilters "x86"
+                abiFilters.addAll(buildArchList)
                 arguments "-DANDROID_STL=c++_static"
 
                 cppFlags "-std=c++11"

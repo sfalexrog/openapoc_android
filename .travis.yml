@@ -2,44 +2,50 @@ language: android
 sudo: false
 addons:
   apt:
+    sources:
+     - ubuntu-toolchain-r-test
     packages:
      - p7zip-full
+     - g++-5
+     - libunwind8-dev
+     - libsdl2-dev
+     - libboost-locale-dev
+     - libboost-filesystem-dev
+     - libboost-program-options-dev
+     - libegl1-mesa-dev
+     - libgles2-mesa-dev
 env:
 # Build for all suppported architectures in parallel
-  - PLATFORM='Mips' BUILD_TYPE='Debug'
-  - PLATFORM='Armv7-a'BUILD_TYPE='Debug'
-  - PLATFORM='X86' BUILD_TYPE='Debug'
-  - PLATFORM='X86_64' BUILD_TYPE='Debug'
-  - PLATFORM='Arm64-v8a' BUILD_TYPE='Debug'
+  - PLATFORM='mips' BUILD_TYPE='Debug'
+  - PLATFORM='armv7-a'BUILD_TYPE='Debug'
+  - PLATFORM='x86' BUILD_TYPE='Debug'
+  - PLATFORM='x86_64' BUILD_TYPE='Debug'
+  - PLATFORM='arm64-v8a' BUILD_TYPE='Debug'
 # TODO: Check if there's a way to have "orthogonal" environment variables
-  - PLATFORM='Mips' BUILD_TYPE='Release'
-  - PLATFORM='Armv7-a'BUILD_TYPE='Release'
-  - PLATFORM='X86' BUILD_TYPE='Release'
-  - PLATFORM='X86_64' BUILD_TYPE='Release'
-  - PLATFORM='Arm64-v8a' BUILD_TYPE='Release'
+  - PLATFORM='mips' BUILD_TYPE='Release'
+  - PLATFORM='armv7-a'BUILD_TYPE='Release'
+  - PLATFORM='x86' BUILD_TYPE='Release'
+  - PLATFORM='x86_64' BUILD_TYPE='Release'
+  - PLATFORM='arm64-v8a' BUILD_TYPE='Release'
 
 before_install:
-  - wget --timeout=120 http://dl.google.com/android/repository/android-ndk-r11b-linux-x86_64.zip -O ndk.zip
-  - sha1sum ndk.zip | grep cf0658956945c81d3d3fad5f9a24fa062d4c9d41
+  - yes | ${ANDROID_HOME}/tools/bin/sdkmanager --update
+  - wget --timeout=120 http://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -O ndk.zip
+  - sha1sum ndk.zip | grep 0bf02d4e8b85fd770fd7b9b2cdec57f9441f27a2
   - 7z x ndk.zip > /dev/null
-  - export ANDROID_NDK=$(pwd)/android-ndk-r11b
+  - export ANDROID_NDK=$(pwd)/android-ndk-r15c
   - printf "ndk.dir=$ANDROID_NDK" > local.properties
-  - chmod +x gradlew
-# Maybe gradlew is not executable?
-install:
-  - git submodule update --init --recursive
-  - chmod +x ./gradlew; ls -l gradlew; ./gradlew wrapper -v
-# Workaround for missing dependencies?
-before_script:
-  - ./gradlew clean --continue
+  - wget http://s2.jonnyh.net/pub/cd_minimal.iso.xz -O OpenApoc/src/main/jni/OpenApoc/data/cd.iso.xz
+  - xz -d OpenApoc/src/main/jni/OpenApoc/data/cd.iso.xz
 script:
-  - ./gradlew assemble${PLATFORM}${BUILD_TYPE} --max-workers=2
+  - ./gradlew assemble${BUILD_TYPE} --max-workers=2
 android:
   components:
 # Android tools are required, see https://github.com/travis-ci/travis-ci/issues/5036
    - tools
-   - android-22
-   - build-tools-22.0.1
+   - build-tools-25.0.2
    - extra-android-m2repository
    - extra-support
    - extra
+  jdk:
+   - oraclejdk8
