@@ -15,7 +15,8 @@
 #define _FILE_OFFSET_BITS 64 // at worst, these defines may have no effect,
 #endif
 #if !defined(__PGI)
-#define __USE_FILE_OFFSET64 // but that is harmless on Windows and on POSIX
+#define __USE_FILE_OFFSET64 1
+      // but that is harmless on Windows and on POSIX
       // 64-bit systems or on 32-bit systems which don't have files larger 
       // than can be represented by a traditional POSIX/UNIX off_t type. 
       // OTOH, defining them should kick in 64-bit off_t's (and thus 
@@ -221,7 +222,20 @@ typedef int err_t;
          || ::mkdir(to.c_str(),from_stat.st_mode)!= 0))
 #   define BOOST_COPY_FILE(F,T,FailIfExistsBool)copy_file_api(F, T, FailIfExistsBool)
 #   define BOOST_MOVE_FILE(OLD,NEW)(::rename(OLD, NEW)== 0)
+#if __ANDROID_API__ < 21
+// Older Android versions shipped without truncate for 64-bit offsets, so we have to simulate the function with ftruncate
+static int android_truncate(const char* path, off_t length)
+{
+    int fd = open(path, O_WRONLY);
+    if (fd < 0) return -1;
+    int status = ftruncate(fd, length);
+    close(fd);
+    return status;
+}
+#   define BOOST_RESIZE_FILE(P,SZ)(android_truncate(P, SZ)== 0)
+#else
 #   define BOOST_RESIZE_FILE(P,SZ)(::truncate(P, SZ)== 0)
+#endif
 
 #   define BOOST_ERROR_NOT_SUPPORTED ENOSYS
 #   define BOOST_ERROR_ALREADY_EXISTS EEXIST
